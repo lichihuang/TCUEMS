@@ -1,4 +1,5 @@
 <template>
+  <BoxModelComponent />
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top align-items-center">
     <div class="container-fluid d-flex align-items-center justify-content-between">
       <div class="navbar-brand sm-1">
@@ -45,10 +46,17 @@
 <script>
 import lottie from "lottie-web";
 import { defineElement } from "@lordicon/element";
+import { useRouter } from 'vue-router';
 defineElement(lottie.loadAnimation);
+import BoxModelComponent from "../components/BoxModelComponent.vue";
+
 export default {
   name: "Header",
+  components:{
+    BoxModelComponent,
+  },
   setup(){
+    const router = useRouter();
     const home = async () => {
       console.log("To PageSearch！");
 

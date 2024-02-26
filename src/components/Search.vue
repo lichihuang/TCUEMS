@@ -1,6 +1,7 @@
 <template>
+  <!-- <BoxModelComponent /> -->
   <div class="col-md-8 col-lg-5" style="margin-top: 9%; margin-left: 29%">
-    <h4 class="mb-3" style="margin-top: -4%;text-align:center">期中預警通知列印</h4>
+    <h4 class="mb-3" style="margin-top: -4%; text-align: center">期中預警通知列印</h4>
     <hr class="my-4" />
     <form
       class="needs-validation"
@@ -13,7 +14,7 @@
             <label
               for="EarlyWarningCourses"
               class="form-label label-text"
-              style="margin-top: 3%; text-align: left;margin-left:4%"
+              style="margin-top: 3%; text-align: left; margin-left: 4%"
               >➢&nbsp;&nbsp;預警課程數&nbsp;&nbsp;≥</label
             >
           </div>
@@ -21,7 +22,7 @@
             <input
               type="text"
               v-model="inputEarlyWarningCourses"
-              @input="inputEarlyWarningCourses=$event.target.value"
+              @input="inputEarlyWarningCourses = $event.target.value"
               class="form-control"
               id="EarlyWarningCourses"
               placeholder=""
@@ -46,12 +47,14 @@
           <label
             for="EarlyWarningRequiredCourses"
             class="form-label label-text"
-            style="margin-top: 5%; text-align: left;margin-left:3%"
+            style="margin-top: 5%; text-align: left; margin-left: 3%"
             >➢&nbsp;&nbsp;或者必修課預警課程數</label
           >
         </div>
         <div class="col-sm-2">
           <input
+            v-model="inputEarlyWarningRequiredCourses"
+            @input="inputEarlyWarningRequiredCourses = $event.target.value"
             type="text"
             class="form-control"
             id="EarlyWarningRequiredCourses"
@@ -60,6 +63,7 @@
             required=""
             style="margin-top: 5%; margin-left: -23%"
           />
+          <p>{{ inputEarlyWarningRequiredCourses }}</p>
           <div class="invalid-feedback">請輸入必修課預警課程數</div>
         </div>
         <div class="col-sm-6">
@@ -81,6 +85,8 @@
         </div>
         <div class="col-sm-2">
           <input
+            v-model="inputAcademicYear"
+            @input="inputAcademicYear = $event.target.value"
             type="text"
             class="form-control"
             id="AcademicYear"
@@ -89,6 +95,7 @@
             required=""
             style="margin-top: 2.5%; margin-left: -65%"
           />
+          <p>{{ inputAcademicYear }}</p>
           <div class="invalid-feedback">請輸入欲查詢之學年</div>
         </div>
         <div class="col-sm-1">
@@ -102,6 +109,7 @@
         <div class="col-sm-2">
           <div class="form-check sm-1" style="margin-top: 5%">
             <input
+              v-model="inputSemester"
               id="FirstSemester"
               name="paymentMethod"
               type="radio"
@@ -121,6 +129,7 @@
         <div class="col-sm-2">
           <div class="form-check" style="margin-top: 5%">
             <input
+              v-model="inputSemester"
               id="SecondSemester"
               name="paymentMethod"
               type="radio"
@@ -233,17 +242,29 @@
           style="margin-left: -20px; margin-top: 25px"
         >
           <div class="col-sm-1">
-            <button class="w-100 btn btn-primary btn-md btn-custom mx-2" type="submit">
+            <button
+              @click="buttonSearch"
+              class="w-100 btn btn-primary btn-md btn-custom mx-2"
+              type="submit"
+            >
               查詢
             </button>
           </div>
           <div class="col-sm-2">
-            <button class="w-100 btn btn-primary btn-md btn-custom mx-2" type="submit">
+            <button
+              @click="buttonToExcel"
+              class="w-100 btn btn-primary btn-md btn-custom mx-2"
+              type="submit"
+            >
               轉出Excel檔
             </button>
           </div>
           <div class="col-sm-1">
-            <button class="w-100 btn btn-primary btn-md btn-custom mx-2" type="submit">
+            <button
+              @click="buttonClear"
+              class="w-100 btn btn-primary btn-md btn-custom mx-2"
+              type="submit"
+            >
               清除
             </button>
           </div>
@@ -262,8 +283,12 @@
                     <div class="col-md-21 col-sm-21">
                       <ul
                         class="list-unstyled"
-                        style="text-align: left; line-height: 1.5; font-size: 1rem;
-                              line-height: 1.8"
+                        style="
+                          text-align: left;
+                          line-height: 1.5;
+                          font-size: 1rem;
+                          line-height: 1.8;
+                        "
                       >
                         <li>
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)&nbsp;系統將列印出指定之期中預警及課程數學生名單，供使用者選擇確定列印範圍
@@ -313,12 +338,32 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import BoxModelComponent from "../components/BoxModelComponent.vue";
 export default {
-  setup(){
-    const inputEarlyWarningCourses=ref('');  //創一個響應式變數 inputValue 放一個空字串，然後再把這個變數綁在 input 的 v-model 
-  },
   name: "Search",
+  /* data:{
+    BoxModelComponent,
+  }, */
+  setup() {
+    const inputEarlyWarningCourses = ref(""); //創一個響應式變數 inputValue 放一個空字串，然後再把這個變數綁在 input 的 v-model
+
+    const router = useRouter();
+    const buttonSearch = async () => {
+      console.log("To Resault！");
+
+      const resolvedRoute1 = router.resolve({ path: "/Resault" });
+      console.log(resolvedRoute1);
+      window.location.href = resolvedRoute1.href; // 使用 resolve 方法進行頁面導覽
+    };
+    const buttonClear = async () => {
+      console.log("Clear！");
+      inputEarlyWarningCourses = "";
+      inputEarlyWarningRequiredCourses = "";
+    };
+    return { buttonSearch, buttonClear };
+  },
 };
 </script>
 
