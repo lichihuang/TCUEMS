@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import SearchMain from '../views/SearchMain.vue';
+import Resault from '../views/Resault.vue';
 const routes = [
   {
     path: '/',
@@ -11,11 +12,31 @@ const routes = [
     name: 'SearchMain',
     component: SearchMain,
   },
+  {
+    path: '/Resault',
+    name: 'Resault',
+    component: Resault,
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  // 防止滚动条残留在切换页面时
+  document.documentElement.scrollTop = 0;
+
+  if (to.path === '/') {
+    // 如果进入 SearchMain 页面，禁用滚动条
+    document.body.style.overflow = 'hidden';
+  } else {
+    // 否则恢复滚动条
+    document.body.style.overflow = 'auto';
+  }
+
+  next();
 });
 
 export default router;

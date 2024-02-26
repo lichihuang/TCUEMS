@@ -1,4 +1,5 @@
 <template>
+  <BoxModelComponent />
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top align-items-center">
     <div class="container-fluid d-flex align-items-center justify-content-between">
       <div class="navbar-brand sm-1">
@@ -25,7 +26,7 @@
           </li>
         </ul>
         <div class="d-flex align-items-start ms-auto home" style="margin-top: 3px">
-          <div class="d-flex flex-column" style="margin-bottom: 1%;margin-left:-50%">
+          <div class="d-flex flex-column" @click="home" style="margin-bottom: 1%;margin-left:-50%">
             <lord-icon
               src="https://cdn.lordicon.com/epietrpn.json"
               trigger="hover"
@@ -45,9 +46,26 @@
 <script>
 import lottie from "lottie-web";
 import { defineElement } from "@lordicon/element";
+import { useRouter } from 'vue-router';
 defineElement(lottie.loadAnimation);
+import BoxModelComponent from "../components/BoxModelComponent.vue";
+
 export default {
   name: "Header",
+  components:{
+    BoxModelComponent,
+  },
+  setup(){
+    const router = useRouter();
+    const home = async () => {
+      console.log("To PageSearch！");
+
+      const resolvedRoute = router.resolve({ path: "/SearchMain" });
+      console.log(resolvedRoute);
+      window.location.href = resolvedRoute.href; // 使用 resolve 方法進行頁面導覽
+    };
+    return { home };
+  }
 };
 </script>
 

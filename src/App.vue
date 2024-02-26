@@ -3,6 +3,7 @@ import Login from "./components/Login.vue";
 import Header from "./components/Header.vue";
 import Search from "./components/Search.vue";
 import SearchMain from "./views/SearchMain.vue";
+/*import 'lord-icon-element/lord-icon.js';*/
 
 export default {
   name: "App",
@@ -16,7 +17,7 @@ export default {
 </script>
 
 <template>
-<router-view></router-view>
+  <router-view></router-view>
 </template>
 
 <style scoped>
