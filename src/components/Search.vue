@@ -20,6 +20,8 @@
           <div class="col-sm-2">
             <input
               type="text"
+              v-model="inputEarlyWarningCourses"
+              @input="inputEarlyWarningCourses=$event.target.value"
               class="form-control"
               id="EarlyWarningCourses"
               placeholder=""
@@ -27,7 +29,8 @@
               required=""
               style="margin-top: 1.5%; margin-left: -25%"
             />
-            <!-- <div class="invalid-feedback">Valid first name is required.</div> -->
+            <p>{{ inputEarlyWarningCourses }}</p>
+            <div class="invalid-feedback">請輸入預警課程數</div>
           </div>
           <div class="col-sm-5">
             <label
@@ -57,7 +60,7 @@
             required=""
             style="margin-top: 5%; margin-left: -23%"
           />
-          <!-- <div class="invalid-feedback">Valid last name is required.</div> -->
+          <div class="invalid-feedback">請輸入必修課預警課程數</div>
         </div>
         <div class="col-sm-6">
           <label
@@ -86,7 +89,7 @@
             required=""
             style="margin-top: 2.5%; margin-left: -65%"
           />
-          <!-- <div class="invalid-feedback">Valid last name is required.</div> -->
+          <div class="invalid-feedback">請輸入欲查詢之學年</div>
         </div>
         <div class="col-sm-1">
           <label
@@ -310,7 +313,11 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 export default {
+  setup(){
+    const inputEarlyWarningCourses=ref('');  //創一個響應式變數 inputValue 放一個空字串，然後再把這個變數綁在 input 的 v-model 
+  },
   name: "Search",
 };
 </script>

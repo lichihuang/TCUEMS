@@ -25,7 +25,7 @@
           </li>
         </ul>
         <div class="d-flex align-items-start ms-auto home" style="margin-top: 3px">
-          <div class="d-flex flex-column" style="margin-bottom: 1%;margin-left:-50%">
+          <div class="d-flex flex-column" @click="home" style="margin-bottom: 1%;margin-left:-50%">
             <lord-icon
               src="https://cdn.lordicon.com/epietrpn.json"
               trigger="hover"
@@ -48,6 +48,16 @@ import { defineElement } from "@lordicon/element";
 defineElement(lottie.loadAnimation);
 export default {
   name: "Header",
+  setup(){
+    const home = async () => {
+      console.log("To PageSearch！");
+
+      const resolvedRoute = router.resolve({ path: "/SearchMain" });
+      console.log(resolvedRoute);
+      window.location.href = resolvedRoute.href; // 使用 resolve 方法進行頁面導覽
+    };
+    return { home };
+  }
 };
 </script>
 

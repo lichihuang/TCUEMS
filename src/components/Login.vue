@@ -38,7 +38,7 @@ export default {
       console.log("To PageSearch！");
       const bgVideo = document.getElementById("yourVideoId");
       bgVideo.src = "";
-      document.body.style.background = "";
+      //document.body.style.background = "";
       document.body.style.overflow = ""; // 還原滾動條
 
       //await nextTick();
