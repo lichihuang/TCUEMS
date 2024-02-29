@@ -1,7 +1,7 @@
 <template>
-  <!-- <BoxModelComponent /> -->
+  <BoxModelComponent />
   <div class="col-md-8 col-lg-5" style="margin-top: 9%; margin-left: 29%">
-    <h4 class="mb-3" style="margin-top: -4%; text-align: center">期中預警通知列印</h4>
+    <h4 class="mb-3" style="margin-top: 10%; text-align: center">期中預警通知列印</h4>
     <hr class="my-4" />
     <form
       class="needs-validation"
@@ -30,8 +30,6 @@
               required=""
               style="margin-top: 1.5%; margin-left: -25%"
             />
-            <p>{{ inputEarlyWarningCourses }}</p>
-            <div class="invalid-feedback">請輸入預警課程數</div>
           </div>
           <div class="col-sm-5">
             <label
@@ -47,7 +45,7 @@
           <label
             for="EarlyWarningRequiredCourses"
             class="form-label label-text"
-            style="margin-top: 5%; text-align: left; margin-left: 3%"
+            style="margin-top: 4%; text-align: left; margin-left: 3%"
             >➢&nbsp;&nbsp;或者必修課預警課程數</label
           >
         </div>
@@ -61,16 +59,14 @@
             placeholder=""
             value=""
             required=""
-            style="margin-top: 5%; margin-left: -23%"
+            style="margin-top: 4%; margin-left: -23%"
           />
-          <p>{{ inputEarlyWarningRequiredCourses }}</p>
-          <div class="invalid-feedback">請輸入必修課預警課程數</div>
         </div>
         <div class="col-sm-6">
           <label
             for="EarlyWarningRequiredCourses"
             class="form-label label-text"
-            style="margin-top: 2.5%; text-align: left; margin-left: -6%"
+            style="margin-top: 2%; text-align: left; margin-left: -6%"
             >(&nbsp;必修課是指學生選課檔別為必修之課程&nbsp;)</label
           >
         </div>
@@ -95,7 +91,6 @@
             required=""
             style="margin-top: 2.5%; margin-left: -65%"
           />
-          <p>{{ inputAcademicYear }}</p>
           <div class="invalid-feedback">請輸入欲查詢之學年</div>
         </div>
         <div class="col-sm-1">
@@ -114,9 +109,9 @@
               name="paymentMethod"
               type="radio"
               class="form-check-input"
-              checked=""
               required=""
               style="margin-top: 5%; margin-left: -100%"
+              value="1"
             />
             <label
               class="form-check-label sm-1"
@@ -136,6 +131,7 @@
               class="form-check-input"
               required=""
               style="margin-top: 5%; margin-left: -135%"
+              value="2"
             />
             <label
               class="form-check-label sm-1"
@@ -155,57 +151,46 @@
           >
         </div>
 
-        <div class="col-md-3" style="margin-top: 2.5%">
-          <select
-            class="form-select"
-            id="country"
-            required=""
-            style="margin-top: 0%; margin-left: -42%"
-          >
-            <option value="">院所</option>
-            <option>醫學院</option>
-            <option>教育傳播學院</option>
-            <option>人文社會學院</option>
-            <option>國際暨跨領域學院</option>
-          </select>
-          <div class="invalid-feedback">Please select a valid country.</div>
-        </div>
+        <div>
+          <div class="col-md-3" style="margin-top: 2.5%">
+            <select
+              v-model="selectedCollege"
+              class="form-select"
+              id="country"
+              required=""
+              style="margin-top: -39%; margin-left: 75%"
+            >
+              <option value="">院所</option>
+              <option value="醫學院">醫學院</option>
+              <option value="教育傳播學院">教育傳播學院</option>
+              <option value="人文社會學院">人文社會學院</option>
+              <option value="國際暨跨領域學院">國際暨跨領域學院</option>
+            </select>
+            <div class="invalid-feedback">Please select a valid country.</div>
+          </div>
 
-        <div class="col-md-5" style="margin-top: 2.5%">
-          <select
-            class="form-select"
-            id="state"
-            required=""
-            style="margin-top: -0.15%; margin-left: -25%"
-          >
-            <option value="">科系</option>
-            <option>醫學系</option>
-            <option>護理系</option>
-            <option>醫學檢驗生物技術系</option>
-            <option>公共衛生學系</option>
-            <option>醫學資訊學系</option>
-            <option>物理治療學系</option>
-            <option>生物醫學暨工程學系</option>
-            <option>分子生物暨人類遺傳學系</option>
-            <option>學士後中醫學系</option>
-            <option>傳播學系</option>
-            <option>兒童發展與家庭教育學系</option>
-            <option>東方語文學系</option>
-            <option>社會工作學系</option>
-            <option>人類發展與心理學系</option>
-            <option>外國語文學系</option>
-            <option>國際服務產業管理學士學位學程</option>
-            <option>國際數位媒體科技學士學位學程</option>
-            <option>永續暨防災碩士學位學程</option>
-          </select>
-          <div class="invalid-feedback">Please provide a valid state.</div>
+          <div class="col-md-4" style="margin-top: 2.5%">
+            <select
+              v-model="selectedDepartment"
+              class="form-select"
+              id="state"
+              required=""
+              style="margin-top: -21.25%; margin-left: 135%"
+            >
+              <option value="">科系</option>
+              <option v-for="department in getDepartments" :key="department">
+                {{ department }}
+              </option>
+            </select>
+            <div class="invalid-feedback">Please provide a valid state.</div>
+          </div>
         </div>
 
         <div class="col-sm-2">
           <label
             for="firstName"
             class="form-label label-text"
-            style="margin-top: 8%; margin-left: 6%"
+            style="margin-top: 4%; margin-left: 6%"
             >➢&nbsp;&nbsp;學號：</label
           >
         </div>
@@ -217,9 +202,8 @@
             placeholder=""
             value=""
             required=""
-            style="margin-top: 1.25%; margin-left: -11%"
+            style="margin-top: -0.5%; margin-left: -11%"
           />
-          <!-- <div class="invalid-feedback">Valid first name is required.</div> -->
         </div>
         <div class="col-sm-3">
           <label
@@ -239,7 +223,7 @@
         </div>
         <div
           class="d-flex justify-content-end"
-          style="margin-left: -20px; margin-top: 25px"
+          style="margin-left: -20px; margin-top: 5px"
         >
           <div class="col-sm-1">
             <button
@@ -318,51 +302,180 @@
               </div>
             </div>
           </div>
-
-          <div class="container" style="margin-top: 30px">
-            <div class="row">
-              <div class="col-12 text-center text-sm" style="font-size: 0.7rem">
-                <p class="mb-0">
-                  CopyRight © 2024 -
-                  <a href="index.html"
-                    >Tzu Chi University Computer Center, All Right Reserved</a
-                  >.
-                </p>
-              </div>
-            </div>
-          </div>
         </footer>
       </div>
     </form>
   </div>
+  <CopyrightNotice />
+  <a href="https://lordicon.com/" class="icon-address">Icons by Lordicon.com</a>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import BoxModelComponent from "../components/BoxModelComponent.vue";
+import Swal from "sweetalert2";
+import ExcelJS from "exceljs";
+import CopyrightNotice from "../components/CopyrightNotice.vue";
+
 export default {
   name: "Search",
-  /* data:{
+  components: {
     BoxModelComponent,
-  }, */
+    CopyrightNotice,
+  },
+  data() {
+    return {
+      selectedCollege: "",
+      selectedDepartment: "",
+      collegeDepartments: {
+        醫學院: [
+          "醫學系",
+          "護理系",
+          "醫學檢驗生物技術系",
+          "公共衛生學系",
+          "醫學資訊學系",
+          "物理治療學系",
+          "生物醫學暨工程學系",
+          "分子生物暨人類遺傳學系",
+          "學士後中醫學系",
+        ],
+        教育傳播學院: ["傳播學系", "兒童發展與家庭教育學系"],
+        人文社會學院: ["東方語文學系", "社會工作學系", "人類發展與心理學系"],
+        國際暨跨領域學院: [
+          "外國語文學系",
+          "國際服務產業管理學士學位學程",
+          "國際數位媒體科技學士學位學程",
+          "永續暨防災碩士學位學程",
+        ],
+      },
+    };
+  },
+  computed: {
+    getDepartments() {
+      return this.collegeDepartments[this.selectedCollege] || [];
+    },
+  },
+  watch: {
+    selectedCollege() {
+      this.selectedDepartment = ""; // 清空選擇的科系
+    },
+  },
   setup() {
-    const inputEarlyWarningCourses = ref(""); //創一個響應式變數 inputValue 放一個空字串，然後再把這個變數綁在 input 的 v-model
+    const inputEarlyWarningCourses = ref("");
+    const inputEarlyWarningRequiredCourses = ref("");
+    const inputAcademicYear = ref("");
+    const selectedCollege = ref("");
+    const selectedDepartment = ref("");
+    const inputSemester = ref("");
 
     const router = useRouter();
-    const buttonSearch = async () => {
-      console.log("To Resault！");
 
-      const resolvedRoute1 = router.resolve({ path: "/Resault" });
-      console.log(resolvedRoute1);
-      window.location.href = resolvedRoute1.href; // 使用 resolve 方法進行頁面導覽
+    const showErrorAlert = (message) => {
+      alert(message);
     };
+
+    const buttonSearch = async (event) => {
+      event.preventDefault(); // 阻止表單的默認提交行為
+      console.log("ErrorMessage！");
+
+      let errorMessages = ""; // 儲存錯誤信息
+
+      if (
+        !inputEarlyWarningCourses.value.trim() &&
+        !inputEarlyWarningRequiredCourses.value.trim()
+      ) {
+        errorMessages += "請至少輸入預警課程數或必修課預警課程數\n";
+      }
+
+      if (!inputAcademicYear.value.trim()) {
+        if (inputSemester.value !== "1" && inputSemester.value !== "2") {
+          errorMessages += "請輸入學年及學期\n";
+        } else errorMessages += "請輸入學年\n";
+      } else if (inputSemester.value !== "1" && inputSemester.value !== "2") {
+        errorMessages += "請選填學期\n";
+      }
+
+      if (selectedCollege.value.trim() === "" || selectedDepartment.value.trim() === "") {
+        errorMessages += "請選擇院所及科系\n";
+      }
+
+      if (errorMessages) {
+        alert(errorMessages);
+      } else {
+        console.log("To Resault！");
+        await router.push({ path: "/Resault" });
+      }
+    };
+
     const buttonClear = async () => {
       console.log("Clear！");
       inputEarlyWarningCourses = "";
       inputEarlyWarningRequiredCourses = "";
     };
-    return { buttonSearch, buttonClear };
+
+    const buttonToExcel = async () => {
+      let errorMessages = "";
+
+      if (
+        !inputEarlyWarningCourses.value.trim() &&
+        !inputEarlyWarningRequiredCourses.value.trim()
+      ) {
+        errorMessages += "請至少輸入預警課程數或必修課預警課程數\n";
+      }
+
+      if (!inputAcademicYear.value.trim()) {
+        if (inputSemester.value !== "1" && inputSemester.value !== "2") {
+          errorMessages += "請輸入學年及學期\n";
+        } else errorMessages += "請輸入學年\n";
+      } else if (inputSemester.value !== "1" && inputSemester.value !== "2") {
+        errorMessages += "請選填學期\n";
+      }
+
+      if (selectedCollege.value.trim() === "" || selectedDepartment.value.trim() === "") {
+        errorMessages += "請選擇院所及科系\n";
+      }
+
+      if (errorMessages) {
+        alert(errorMessages);
+      } else {
+        console.log("To Excel Logic!");
+
+        // Excel 檔案生成邏輯
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Sheet 1");
+
+        // 在這裡添加將數據轉換為 Excel 的邏輯
+
+        // 生成 Excel 檔案
+        const blob = await workbook.xlsx.writeBuffer();
+        const url = URL.createObjectURL(
+          new Blob([blob], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          })
+        );
+
+        // 創建 a 標籤模擬點擊
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "output.xlsx";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    };
+
+    return {
+      inputEarlyWarningCourses,
+      inputEarlyWarningRequiredCourses,
+      inputAcademicYear,
+      inputSemester,
+      selectedCollege,
+      selectedDepartment,
+      buttonSearch,
+      buttonClear,
+      buttonToExcel,
+    };
   },
 };
 </script>
@@ -398,5 +511,11 @@ export default {
 }
 使用者代理程式樣式表 div {
   display: block;
+}
+.icon-address {
+  font-size: 7px;
+  position: fixed;
+  top: 905px;
+  left: 1838px;
 }
 </style>

@@ -31,23 +31,10 @@ const titleSource = "./title.png";
 const stairSource = "./stair.png";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 export default {
-  name: "LoginTem",
+  name: "Login",
   setup() {
     const router = useRouter();
 
-    /* const pageLogingClick = async () => {
-      console.log("To PageSearch！");
-      const bgVideo = document.getElementById("yourVideoId");
-      bgVideo.src = "";
-      //document.body.style.background = "";
-      document.body.style.overflow = "auto"; // 還原滾動條
-
-      //await nextTick();
-
-      const resolvedRoute = router.resolve({ path: "/SearchMain" });
-      console.log(resolvedRoute);
-      window.location.href = resolvedRoute.href; // 使用 resolve 方法進行頁面導覽
-    }; */
     const pageLogingClick = async () => {
       console.log("To PageSearch!");
       const bgVideo = document.getElementById("yourVideoId");

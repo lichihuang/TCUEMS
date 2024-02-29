@@ -13,4 +13,4 @@ const app = createApp(App);
 app.component('SearchMain', SearchMain); // 注冊 SearchMain 組件
 app.component('Resault', Resault); // 注冊 Resault 組件
 app.use(router);
-app.mount('#app');
+app.mount('#app'); 
