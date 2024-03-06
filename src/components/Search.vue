@@ -188,7 +188,7 @@
 
         <div class="col-sm-2">
           <label
-            for="firstName"
+            for="studentID"
             class="form-label label-text"
             style="margin-top: 4%; margin-left: 6%"
             >➢&nbsp;&nbsp;學號：</label
@@ -196,6 +196,7 @@
         </div>
         <div class="col-sm-4">
           <input
+            v-model="inputStudentID"
             type="text"
             class="form-control"
             id="firstName"
@@ -238,7 +239,7 @@
             <button
               @click="buttonToExcel"
               class="w-100 btn btn-primary btn-md btn-custom mx-2"
-              type="submit"
+              type="button"
             >
               轉出Excel檔
             </button>
@@ -247,7 +248,7 @@
             <button
               @click="buttonClear"
               class="w-100 btn btn-primary btn-md btn-custom mx-2"
-              type="submit"
+              type="reset"
             >
               清除
             </button>
@@ -368,6 +369,7 @@ export default {
     const selectedCollege = ref("");
     const selectedDepartment = ref("");
     const inputSemester = ref("");
+    const inputStudentID = ref(""); // 加入學號的 ref
 
     const router = useRouter();
 
@@ -400,8 +402,12 @@ export default {
         errorMessages += "請選擇院所及科系\n";
       }
 
+      const searchKeyword = document.getElementById("searchInput").value;
+      const searchResults = await performSearch({ keyword: searchKeyword });
       if (errorMessages) {
         alert(errorMessages);
+      } else if (searchResults.length == 0) {
+        alert("查無資料，請嘗試使用其他條件進行搜索。");
       } else {
         console.log("To Resault！");
         await router.push({ path: "/Resault" });
@@ -410,8 +416,8 @@ export default {
 
     const buttonClear = async () => {
       console.log("Clear！");
-      inputEarlyWarningCourses = "";
-      inputEarlyWarningRequiredCourses = "";
+      inputEarlyWarningCourses.value = "";
+      inputEarlyWarningRequiredCourses.value = "";
     };
 
     const buttonToExcel = async () => {
@@ -455,7 +461,6 @@ export default {
           })
         );
 
-        // 創建 a 標籤模擬點擊
         const link = document.createElement("a");
         link.href = url;
         link.download = "output.xlsx";
