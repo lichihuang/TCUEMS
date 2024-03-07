@@ -156,7 +156,7 @@
             <select
               v-model="selectedCollege"
               class="form-select"
-              id="country"
+              id="college"
               required=""
               style="margin-top: -39%; margin-left: 75%"
             >
@@ -188,7 +188,7 @@
 
         <div class="col-sm-2">
           <label
-            for="firstName"
+            for="studentID"
             class="form-label label-text"
             style="margin-top: 4%; margin-left: 6%"
             >➢&nbsp;&nbsp;學號：</label
@@ -196,9 +196,10 @@
         </div>
         <div class="col-sm-4">
           <input
+            v-model="inputStudentID"
             type="text"
             class="form-control"
-            id="firstName"
+            id="studentID"
             placeholder=""
             value=""
             required=""
@@ -328,6 +329,11 @@ export default {
     return {
       selectedCollege: "",
       selectedDepartment: "",
+      inputEarlyWarningCourses: "",
+      inputEarlyWarningRequiredCourses: "",
+      inputAcademicYear: "",
+      inputSemester: "",
+      inputStudentID: "",
       collegeDepartments: {
         醫學院: [
           "醫學系",
@@ -361,13 +367,19 @@ export default {
       this.selectedDepartment = ""; // 清空選擇的科系
     },
   },
+  methods: {
+    searchData() {
+      console.log(this.inputEarlyWarningCourses);
+    },
+  },
   setup() {
     const inputEarlyWarningCourses = ref("");
     const inputEarlyWarningRequiredCourses = ref("");
     const inputAcademicYear = ref("");
+    const inputSemester = ref("");
     const selectedCollege = ref("");
     const selectedDepartment = ref("");
-    const inputSemester = ref("");
+    const inputStudentID = ref("");
 
     const router = useRouter();
 
@@ -408,13 +420,23 @@ export default {
       }
     };
 
-    const buttonClear = async () => {
+    const buttonClear = async (event) => {
+      event.preventDefault();
+      console.log("ErrorMessage！");
       console.log("Clear！");
-      inputEarlyWarningCourses = "";
-      inputEarlyWarningRequiredCourses = "";
+
+      selectedCollege.value = "";
+      selectedDepartment.value = "";
+      inputEarlyWarningCourses.value = "";
+      inputEarlyWarningRequiredCourses.value = "";
+      inputAcademicYear.value = "";
+      inputSemester.value = "";
+      inputStudentID.value = "";
     };
 
     const buttonToExcel = async () => {
+      event.preventDefault(); // 阻止表單的默認提交行為
+      console.log("ErrorMessage！");
       let errorMessages = "";
 
       if (
@@ -455,7 +477,6 @@ export default {
           })
         );
 
-        // 創建 a 標籤模擬點擊
         const link = document.createElement("a");
         link.href = url;
         link.download = "output.xlsx";
@@ -472,6 +493,7 @@ export default {
       inputSemester,
       selectedCollege,
       selectedDepartment,
+      inputStudentID,
       buttonSearch,
       buttonClear,
       buttonToExcel,
