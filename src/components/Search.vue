@@ -156,7 +156,7 @@
             <select
               v-model="selectedCollege"
               class="form-select"
-              id="country"
+              id="college"
               required=""
               style="margin-top: -39%; margin-left: 75%"
             >
@@ -199,7 +199,7 @@
             v-model="inputStudentID"
             type="text"
             class="form-control"
-            id="firstName"
+            id="studentID"
             placeholder=""
             value=""
             required=""
@@ -239,7 +239,7 @@
             <button
               @click="buttonToExcel"
               class="w-100 btn btn-primary btn-md btn-custom mx-2"
-              type="button"
+              type="submit"
             >
               轉出Excel檔
             </button>
@@ -248,7 +248,7 @@
             <button
               @click="buttonClear"
               class="w-100 btn btn-primary btn-md btn-custom mx-2"
-              type="reset"
+              type="submit"
             >
               清除
             </button>
@@ -312,12 +312,13 @@
 </template>
 
 <script>
-import { ref, reactive } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import BoxModelComponent from "../components/BoxModelComponent.vue";
 import Swal from "sweetalert2";
 import ExcelJS from "exceljs";
 import CopyrightNotice from "../components/CopyrightNotice.vue";
+import axios from "axios";
 
 export default {
   name: "Search",
@@ -329,6 +330,11 @@ export default {
     return {
       selectedCollege: "",
       selectedDepartment: "",
+      inputEarlyWarningCourses: "",
+      inputEarlyWarningRequiredCourses: "",
+      inputAcademicYear: "",
+      inputSemester: "",
+      inputStudentID: "",
       collegeDepartments: {
         醫學院: [
           "醫學系",
@@ -358,28 +364,84 @@ export default {
     },
   },
   watch: {
-    selectedCollege() {
-      this.selectedDepartment = ""; // 清空選擇的科系
+    selectedCollege: function () {
+      this.selectedDepartment = "";
+    },
+  },
+  methods: {
+    async buttonSearch() {
+      try {
+        const response = await axios.get("http://localhost:5256/api/SemesterWarning", {
+          responseType: "json",
+        });
+        console.log(response); // 檢查響應內容
+
+        if (response && response.statusText) {
+          // 正確處理
+          // 可以在這裡進行對 API 響應的其他處理
+        } else {
+          console.error("Invalid response format");
+        }
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
   setup() {
+    const router = useRouter();
+
+    const selectedCollege = ref("");
+    const selectedDepartment = ref("");
     const inputEarlyWarningCourses = ref("");
     const inputEarlyWarningRequiredCourses = ref("");
     const inputAcademicYear = ref("");
-    const selectedCollege = ref("");
-    const selectedDepartment = ref("");
     const inputSemester = ref("");
-    const inputStudentID = ref(""); // 加入學號的 ref
+    const inputStudentID = ref("");
 
-    const router = useRouter();
+    const collegeDepartments = {
+      醫學院: [
+        "醫學系",
+        "護理系",
+        "醫學檢驗生物技術系",
+        "公共衛生學系",
+        "醫學資訊學系",
+        "物理治療學系",
+        "生物醫學暨工程學系",
+        "分子生物暨人類遺傳學系",
+        "學士後中醫學系",
+      ],
+      教育傳播學院: ["傳播學系", "兒童發展與家庭教育學系"],
+      人文社會學院: ["東方語文學系", "社會工作學系", "人類發展與心理學系"],
+      國際暨跨領域學院: [
+        "外國語文學系",
+        "國際服務產業管理學士學位學程",
+        "國際數位媒體科技學士學位學程",
+        "永續暨防災碩士學位學程",
+      ],
+    };
+
+    const getDepartments = computed(
+      () => collegeDepartments[selectedCollege.value] || []
+    );
 
     const showErrorAlert = (message) => {
       alert(message);
     };
 
+    const handleRequestError = (error) => {
+      if (error.response) {
+        console.error(
+          `Response status: ${error.response.status}, Response data: ${error.response.data}`
+        );
+      } else if (error.request) {
+        console.error("No response received from the server.");
+      } else {
+        console.error(`Error during request: ${error.message}`);
+      }
+    };
+
     const buttonSearch = async (event) => {
-      event.preventDefault(); // 阻止表單的默認提交行為
-      console.log("ErrorMessage！");
+      event.preventDefault();
 
       let errorMessages = ""; // 儲存錯誤信息
 
@@ -389,7 +451,6 @@ export default {
       ) {
         errorMessages += "請至少輸入預警課程數或必修課預警課程數\n";
       }
-
       if (!inputAcademicYear.value.trim()) {
         if (inputSemester.value !== "1" && inputSemester.value !== "2") {
           errorMessages += "請輸入學年及學期\n";
@@ -398,29 +459,37 @@ export default {
         errorMessages += "請選填學期\n";
       }
 
-      if (selectedCollege.value.trim() === "" || selectedDepartment.value.trim() === "") {
-        errorMessages += "請選擇院所及科系\n";
-      }
-
-      const searchKeyword = document.getElementById("searchInput").value;
-      const searchResults = await performSearch({ keyword: searchKeyword });
       if (errorMessages) {
         alert(errorMessages);
-      } else if (searchResults.length == 0) {
-        alert("查無資料，請嘗試使用其他條件進行搜索。");
       } else {
-        console.log("To Resault！");
-        await router.push({ path: "/Resault" });
+        try {
+          const response = await axios.get("http://localhost:5256/api/SemesterWarning", {
+            responseType: "json",
+          });
+          console.log(response);
+
+          if (response && response.status === 200) {
+            if (response.data && response.data.length > 0) {
+              await router.push({ name: "Result" });
+            } else {
+              showErrorAlert("無相符資料");
+            }
+          } else {
+            console.error("Unexpected response:", response);
+            showErrorAlert("搜尋失敗，請稍後再試。");
+          }
+        } catch (error) {
+          console.error("Error during API request:", error);
+          handleRequestError(error);
+
+          showErrorAlert("搜尋失敗，請稍後再試。");
+        }
       }
     };
 
-    const buttonClear = async () => {
-      console.log("Clear！");
-      inputEarlyWarningCourses.value = "";
-      inputEarlyWarningRequiredCourses.value = "";
-    };
-
-    const buttonToExcel = async () => {
+    const buttonToExcel = async (event) => {
+      event.preventDefault();
+      console.log("ErrorMessage！");
       let errorMessages = "";
 
       if (
@@ -429,7 +498,6 @@ export default {
       ) {
         errorMessages += "請至少輸入預警課程數或必修課預警課程數\n";
       }
-
       if (!inputAcademicYear.value.trim()) {
         if (inputSemester.value !== "1" && inputSemester.value !== "2") {
           errorMessages += "請輸入學年及學期\n";
@@ -437,7 +505,6 @@ export default {
       } else if (inputSemester.value !== "1" && inputSemester.value !== "2") {
         errorMessages += "請選填學期\n";
       }
-
       if (selectedCollege.value.trim() === "" || selectedDepartment.value.trim() === "") {
         errorMessages += "請選擇院所及科系\n";
       }
@@ -450,9 +517,6 @@ export default {
         // Excel 檔案生成邏輯
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Sheet 1");
-
-        // 在這裡添加將數據轉換為 Excel 的邏輯
-
         // 生成 Excel 檔案
         const blob = await workbook.xlsx.writeBuffer();
         const url = URL.createObjectURL(
@@ -470,13 +534,28 @@ export default {
       }
     };
 
+    const buttonClear = async (event) => {
+      event.preventDefault();
+      console.log("Clear！");
+
+      selectedCollege.value = "";
+      selectedDepartment.value = "";
+      inputEarlyWarningCourses.value = "";
+      inputEarlyWarningRequiredCourses.value = "";
+      inputAcademicYear.value = "";
+      inputSemester.value = "";
+      inputStudentID.value = "";
+    };
+
     return {
+      selectedCollege,
+      selectedDepartment,
       inputEarlyWarningCourses,
       inputEarlyWarningRequiredCourses,
       inputAcademicYear,
       inputSemester,
-      selectedCollege,
-      selectedDepartment,
+      inputStudentID,
+      getDepartments,
       buttonSearch,
       buttonClear,
       buttonToExcel,

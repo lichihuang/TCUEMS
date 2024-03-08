@@ -30,9 +30,18 @@ const pageLoginButtonSource = "./PageLoginButton.png";
 const titleSource = "./title.png";
 const stairSource = "./stair.png";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
+import axios from "axios";
 export default {
   name: "Login",
   setup() {
+    console.log("ttt");
+    const onload = async () => {
+      const response = await axios.get("http://localhost:5256/api/SemesterWarning", {
+        responseType: "json",
+      });
+      console.log(response);
+    };
+    onload();
     const router = useRouter();
 
     const pageLogingClick = async () => {

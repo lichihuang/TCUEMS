@@ -85,7 +85,7 @@ import BoxModelComponent from "../components/BoxModelComponent.vue";
 import CopyrightNotice from "../components/CopyrightNotice.vue";
 
 export default {
-  name: "Resault",
+  name: "Result",
   components: {
     Header,
     BoxModelComponent,
