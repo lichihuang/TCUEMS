@@ -448,16 +448,12 @@ export default {
 
       let errorMessages = "";
 
-      if (
-        !inputEarlyWarningCourses.value.trim() &&
-        !inputEarlyWarningRequiredCourses.value.trim()
-      ) {
-        errorMessages += "請至少輸入預警課程數或必修課預警課程數\n";
-      }
       if (!inputAcademicYear.value.trim()) {
         if (inputSemester.value !== "1" && inputSemester.value !== "2") {
           errorMessages += "請輸入學年及學期\n";
-        } else errorMessages += "請輸入學年\n";
+        } else {
+          errorMessages += "請輸入學年\n";
+        }
       } else if (inputSemester.value !== "1" && inputSemester.value !== "2") {
         errorMessages += "請選填學期\n";
       }
@@ -465,23 +461,63 @@ export default {
       if (errorMessages) {
         alert(errorMessages);
       } else {
-        console.log("To Excel Logic!");
+        const requestData = {
+          w_smtr: inputAcademicYear.value + inputSemester.value,
+          w_std_no: inputStudentID.value.trim(),
+          chi_name: "",
+          st_state: "",
+          dept_name_s: selectedDepartment.value,
+          degree: "",
+          sw_class: "",
+        };
 
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet("Sheet 1");
-        const blob = await workbook.xlsx.writeBuffer();
-        const url = URL.createObjectURL(
-          new Blob([blob], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          })
-        );
+        try {
+          const response = await axios.post(
+            "http://localhost:5256/api/SemesterWarning/Search",
+            requestData,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
 
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "EarlyWarning.xlsx";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+          console.log("API 回應：", response);
+
+          if (response && response.status === 200) {
+            if (response.data && response.data.length > 0) {
+              console.log("相符資料：", response.data);
+              console.log("To Excel Logic!");
+
+              const workbook = new ExcelJS.Workbook();
+              const worksheet = workbook.addWorksheet("Sheet 1");
+              const blob = await workbook.xlsx.writeBuffer();
+              const url = URL.createObjectURL(
+                new Blob([blob], {
+                  type:
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                })
+              );
+
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = "EarlyWarning.xlsx";
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            } else {
+              console.log("無相符資料");
+              alert("無相符資料");
+            }
+          } else {
+            console.log("搜尋失敗");
+            alert("搜尋失敗，請稍後再試。");
+          }
+        } catch (error) {
+          console.error("Error during API request:", error);
+          // 在這裡處理錯誤
+          alert("搜尋失敗，請稍後再試。");
+        }
       }
     };
 
