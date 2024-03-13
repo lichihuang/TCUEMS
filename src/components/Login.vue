@@ -48,7 +48,7 @@ export default {
       console.log("To PageSearch!");
       const bgVideo = document.getElementById("yourVideoId");
       bgVideo.src = "";
-      enableBodyScroll(document.body); // 启用滚动条
+      enableBodyScroll(document.body);
 
       //await nextTick();
 
@@ -121,5 +121,32 @@ body {
   height: 30%;
   margin-left: -60%;
   margin-bottom: -45%;
+}
+
+@media screen and (max-width: 767px) {
+  .full-height {
+    height: auto; /* 將高度設為自動，以便適應內容 */
+    margin: 0;
+    padding: 10px;
+  }
+
+  .logo {
+    width: 58%; /* 調整 logo 在小螢幕上的大小 */
+    margin-top: 5%; /* 調整 logo 在小螢幕上的 margin-top */
+    margin-left: -5%; /* 調整 logo 在小螢幕上的 margin-left */
+  }
+
+  .btn-img {
+    width: 32%; /* 調整 btn-img 在小螢幕上的大小 */
+    margin-top: 15%; /* 調整 btn-img 在小螢幕上的 margin-top */
+    margin-left: 8.5%; /* 調整 btn-img 在小螢幕上的 margin-left */
+  }
+
+  .stair-img {
+    width: 90%; /* 調整 stair-img 在小螢幕上的大小 */
+    height: 15%; /* 調整 stair-img 在小螢幕上的高度 */
+    margin-left: -35%; /* 調整 stair-img 在小螢幕上的 margin-left */
+    margin-top: 45%; /* 調整 stair-img 在小螢幕上的 margin-bottom */
+  }
 }
 </style>

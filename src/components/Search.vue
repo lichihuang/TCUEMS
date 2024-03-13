@@ -1,6 +1,6 @@
 <template>
   <BoxModelComponent />
-  <div class="col-md-8 col-lg-5" style="margin-top: 9%; margin-left: 29%">
+  <div class="search-block col-md-8 col-lg-5">
     <h4 class="mb-3" style="margin-top: 10%; text-align: center">期中預警通知列印</h4>
     <hr class="my-4" />
     <form
@@ -312,10 +312,9 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import BoxModelComponent from "../components/BoxModelComponent.vue";
-import Swal from "sweetalert2";
 import ExcelJS from "exceljs";
 import CopyrightNotice from "../components/CopyrightNotice.vue";
 import axios from "axios";
@@ -325,67 +324,6 @@ export default {
   components: {
     BoxModelComponent,
     CopyrightNotice,
-  },
-  data() {
-    return {
-      selectedCollege: "",
-      selectedDepartment: "",
-      inputEarlyWarningCourses: "",
-      inputEarlyWarningRequiredCourses: "",
-      inputAcademicYear: "",
-      inputSemester: "",
-      inputStudentID: "",
-      collegeDepartments: {
-        醫學院: [
-          "醫學系",
-          "護理系",
-          "醫學檢驗生物技術系",
-          "公共衛生學系",
-          "醫學資訊學系",
-          "物理治療學系",
-          "生物醫學暨工程學系",
-          "分子生物暨人類遺傳學系",
-          "學士後中醫學系",
-        ],
-        教育傳播學院: ["傳播學系", "兒童發展與家庭教育學系"],
-        人文社會學院: ["東方語文學系", "社會工作學系", "人類發展與心理學系"],
-        國際暨跨領域學院: [
-          "外國語文學系",
-          "國際服務產業管理學士學位學程",
-          "國際數位媒體科技學士學位學程",
-          "永續暨防災碩士學位學程",
-        ],
-      },
-    };
-  },
-  computed: {
-    getDepartments() {
-      return this.collegeDepartments[this.selectedCollege] || [];
-    },
-  },
-  watch: {
-    selectedCollege: function () {
-      this.selectedDepartment = "";
-    },
-  },
-  methods: {
-    async buttonSearch() {
-      try {
-        const response = await axios.get("http://localhost:5256/api/SemesterWarning", {
-          responseType: "json",
-        });
-        console.log(response); // 檢查響應內容
-
-        if (response && response.statusText) {
-          // 正確處理
-          // 可以在這裡進行對 API 響應的其他處理
-        } else {
-          console.error("Invalid response format");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    },
   },
   setup() {
     const router = useRouter();
@@ -440,21 +378,21 @@ export default {
       }
     };
 
+    watchEffect(() => {
+      console.log(selectedDepartment.value);
+    });
+
     const buttonSearch = async (event) => {
       event.preventDefault();
 
-      let errorMessages = ""; // 儲存錯誤信息
+      let errorMessages = "";
 
-      if (
-        !inputEarlyWarningCourses.value.trim() &&
-        !inputEarlyWarningRequiredCourses.value.trim()
-      ) {
-        errorMessages += "請至少輸入預警課程數或必修課預警課程數\n";
-      }
       if (!inputAcademicYear.value.trim()) {
         if (inputSemester.value !== "1" && inputSemester.value !== "2") {
           errorMessages += "請輸入學年及學期\n";
-        } else errorMessages += "請輸入學年\n";
+        } else {
+          errorMessages += "請輸入學年\n";
+        }
       } else if (inputSemester.value !== "1" && inputSemester.value !== "2") {
         errorMessages += "請選填學期\n";
       }
@@ -462,34 +400,52 @@ export default {
       if (errorMessages) {
         alert(errorMessages);
       } else {
+        const requestData = {
+          w_smtr: inputAcademicYear.value + inputSemester.value,
+          w_std_no: inputStudentID.value.trim(),
+          chi_name: "",
+          st_state: "",
+          dept_name_s: selectedDepartment.value,
+          degree: "",
+          sw_class: "",
+        };
+
         try {
-          const response = await axios.get("http://localhost:5256/api/SemesterWarning", {
-            responseType: "json",
-          });
-          console.log(response);
+          const response = await axios.post(
+            "http://localhost:5256/api/SemesterWarning/Search",
+            requestData,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          console.log("API 回應：", response);
 
           if (response && response.status === 200) {
             if (response.data && response.data.length > 0) {
+              console.log("相符資料：", response.data);
               await router.push({ name: "Result" });
             } else {
-              showErrorAlert("無相符資料");
+              console.log("無相符資料");
+              alert("無相符資料");
             }
           } else {
-            console.error("Unexpected response:", response);
-            showErrorAlert("搜尋失敗，請稍後再試。");
+            console.log("搜尋失敗");
+            alert("搜尋失敗，請稍後再試。");
           }
         } catch (error) {
           console.error("Error during API request:", error);
-          handleRequestError(error);
-
-          showErrorAlert("搜尋失敗，請稍後再試。");
+          // 在這裡處理錯誤
+          alert("搜尋失敗，請稍後再試。");
         }
       }
     };
 
     const buttonToExcel = async (event) => {
       event.preventDefault();
-      console.log("ErrorMessage！");
+
       let errorMessages = "";
 
       if (
@@ -505,19 +461,14 @@ export default {
       } else if (inputSemester.value !== "1" && inputSemester.value !== "2") {
         errorMessages += "請選填學期\n";
       }
-      if (selectedCollege.value.trim() === "" || selectedDepartment.value.trim() === "") {
-        errorMessages += "請選擇院所及科系\n";
-      }
 
       if (errorMessages) {
         alert(errorMessages);
       } else {
         console.log("To Excel Logic!");
 
-        // Excel 檔案生成邏輯
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Sheet 1");
-        // 生成 Excel 檔案
         const blob = await workbook.xlsx.writeBuffer();
         const url = URL.createObjectURL(
           new Blob([blob], {
@@ -527,7 +478,7 @@ export default {
 
         const link = document.createElement("a");
         link.href = url;
-        link.download = "output.xlsx";
+        link.download = "EarlyWarning.xlsx";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -601,5 +552,20 @@ export default {
   position: fixed;
   top: 905px;
   left: 1838px;
+}
+.search-block {
+  margin-top: 9%;
+  margin-left: 29%;
+}
+
+@media screen and (max-width: 767px) {
+  .icon-address {
+    font-size: 14px; /* 依據需求調整大小 */
+    position: static; /* 移除 fixed 定位，讓它在文件流中正常顯示 */
+    top: auto;
+    left: auto;
+    margin-top: 10px; /* 依據需求調整距離上方的距離 */
+    text-align: center; /* 讓文字在小螢幕上置中 */
+  }
 }
 </style>

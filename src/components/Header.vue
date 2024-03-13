@@ -3,39 +3,24 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top align-items-center">
     <div class="container-fluid d-flex align-items-center justify-content-between">
       <div class="navbar-brand sm-1">
-        <img
-          src="/TopTitle1.png"
-          alt="Top Logo"
-          style="max-width: 80%; height: 80%; margin-left: 5%;margin-top:1%"
-        />
+        <img class="top-logo" src="/TopTitle1.png" alt="Top Logo" />
       </div>
       <div class="d-flex align-items-center flex-grow-1">
-        <ul class="navbar-nav me-auto mb-3 mb-md-0" style="margin: 0">
+        <ul class="navbar-nav me-auto mb-24 mb-md-0" style="margin: 0">
           <li class="nav-item active d-flex">
-            <p
-              style="
-                color: #ffffff;
-                font-size: 1.8rem;
-                margin-top: 4%;
-                margin-left: -40%;
-                margin-bottom: 0;
-              "
-            >
-              教務管理系統
-            </p>
+            <p class="header-title">教務管理系統</p>
           </li>
         </ul>
         <div class="d-flex align-items-start ms-auto home" style="margin-top: 3px">
-          <div class="d-flex flex-column" @click="home" style="margin-bottom: 1%;margin-left:-50%">
+          <div class="d-flex flex-column" @click="home">
             <lord-icon
               src="https://cdn.lordicon.com/epietrpn.json"
               trigger="hover"
               colors="primary:#121331,secondary:#d1e3fa,tertiary:#d59f80,quaternary:#ffc26c,quinary:#faebd7,senary:#646e78,septenary:#ffffff"
               stroke="bold"
-              style="width: 45px; height: 45px"
               class="nav-link"
             ></lord-icon>
-            <p style="color: #ffffff; margin-bottom: 0; font-size: 0.8rem;margin-left:9.25%">HOME</p>
+            <p class="home-title">HOME</p>
           </div>
         </div>
       </div>
@@ -46,16 +31,16 @@
 <script>
 import lottie from "lottie-web";
 import { defineElement } from "@lordicon/element";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 defineElement(lottie.loadAnimation);
 import BoxModelComponent from "../components/BoxModelComponent.vue";
 
 export default {
   name: "Header",
-  components:{
+  components: {
     BoxModelComponent,
   },
-  setup(){
+  setup() {
     const router = useRouter();
     const home = async () => {
       console.log("To PageSearch！");
@@ -65,7 +50,7 @@ export default {
       window.location.href = resolvedRoute.href; // 使用 resolve 方法進行頁面導覽
     };
     return { home };
-  }
+  },
 };
 </script>
 
@@ -87,5 +72,84 @@ nav {
 }
 .home {
   cursor: pointer;
+}
+.header-title {
+  color: #ffffff;
+  font-size: 1.8rem;
+  margin-top: 4%;
+  margin-left: -40%;
+  margin-bottom: 0;
+}
+.top-logo {
+  max-width: 80%;
+  height: 80%;
+  margin-left: 5%;
+  margin-top: 1%;
+}
+
+.nav-link {
+  width: 45px;
+  height: 45px;
+}
+.home-title {
+  color: #ffffff;
+}
+
+.d-flex .flex-column {
+  margin-left: -40%;
+  margin-top: 25%;
+}
+
+@media screen and (max-width: 767px) {
+  nav {
+    width: 55%;
+    padding: 10px;
+    height: 7.5%;
+  }
+
+  .navbar-nav .nav-link .bi {
+    margin-left: 10%;
+  }
+
+  .nav-link {
+    margin-top: 10%;
+    width: 100%;
+  }
+
+  .btn-custom {
+    margin-top: 10px;
+  }
+
+  .btn-img {
+    width: 80%; /* 依據需求調整大小 */
+    margin-top: 10px;
+  }
+  .top-logo {
+    width: 60%; /* 依據需求調整大小 */
+    margin-top: 10px;
+    margin-left: 19.5%;
+  }
+  .header-title {
+    font-size: 1.3rem;
+    margin-top: -12%;
+    margin-left: 35%;
+    margin-bottom: 0;
+  }
+  .navbar-nav {
+    font-size: 0.3rem;
+  }
+  .d-flex .flex-column {
+    width: 80%;
+    margin-top: 10%;
+  }
+  .navbar-nav {
+    margin-top: 30%;
+    width: 120%;
+  }
+  .d-flex .flex-column {
+    width: 75%;
+    margin-top: -10%;
+    margin-left: 0%;
+  }
 }
 </style>

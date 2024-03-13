@@ -44,7 +44,6 @@
           </a>
         </li>
 
-        <!-- Dynamically generate page numbers using computed property -->
         <li class="page-item" v-for="page in filteredPages" :key="page">
           <a
             class="page-link"
@@ -78,8 +77,6 @@
 </template>
 
 <script>
-/* import { defineComponent } from "@vue/composition-api"; */
-
 import Header from "../components/Header.vue";
 import BoxModelComponent from "../components/BoxModelComponent.vue";
 import CopyrightNotice from "../components/CopyrightNotice.vue";
@@ -127,7 +124,6 @@ export default {
     },
   },
   mounted() {
-    // 在 mounted 階段計算每頁顯示的資料數
     this.calculateItemsPerPage();
 
     const semester = this.$route.params.semester;
