@@ -77,6 +77,8 @@
 </template>
 
 <script>
+import { ref, computed, watch, onMounted } from "vue";
+import { useRoute } from "vue-router"; // 引入 useRoute 方法
 import Header from "../components/Header.vue";
 import BoxModelComponent from "../components/BoxModelComponent.vue";
 import CopyrightNotice from "../components/CopyrightNotice.vue";
@@ -88,66 +90,66 @@ export default {
     BoxModelComponent,
     CopyrightNotice,
   },
-  data() {
+  setup() {
+    const currentPage = ref(1);
+    const itemsPerPage = ref(10);
+    const totalItems = ref(0);
+    const totalPages = ref(1);
+    const resultTitle = ref("");
+
+    const handlePageChange = (page) => {
+      currentPage.value = page;
+    };
+
+    const goToPage = (page) => {
+      currentPage.value = page;
+    };
+
+    const paginatedData = computed(() => {
+      const startIndex = (currentPage.value - 1) * itemsPerPage.value;
+      const endIndex = startIndex + itemsPerPage.value;
+      return /* 你的数据数组，根据分页计算的范围截取数据 */;
+    });
+
+    const calculateItemsPerPage = () => {
+      const averageRowHeight = 50;
+      itemsPerPage.value = Math.floor(window.innerHeight / averageRowHeight);
+    };
+
+    onMounted(() => {
+      calculateItemsPerPage();
+
+      const route = useRoute();
+      const semester = route.params.semester;
+      const year = route.params.year;
+
+      if (semester && year) {
+        resultTitle.value = `${year}學年第${semester}学期期中預警學生`;
+      }
+    });
+
+    watch(totalItems, () => {
+      calculateItemsPerPage();
+    });
+
+    const filteredPages = computed(() => {
+      return totalPages.value > 1
+        ? Array.from({ length: totalPages.value }, (_, index) => index + 1)
+        : [1];
+    });
+
     return {
-      currentPage: 1,
-      itemsPerPage: 10, // 初始值，將在 mounted 時根據實際情況重新計算
-      totalItems: 0,
-      // 其他的資料和資料庫連接相關的變數
-      totalPages: 1,
-      resultTitle: "",
+      currentPage,
+      itemsPerPage,
+      totalItems,
+      totalPages,
+      resultTitle,
+      handlePageChange,
+      goToPage,
+      paginatedData,
+      filteredPages,
     };
   },
-  methods: {
-    handlePageChange(page) {
-      this.currentPage = page;
-      // 根據新的頁碼載入對應的資料
-      // ...
-    },
-    goToPage(page) {
-      this.currentPage = page;
-    },
-  },
-  computed: {
-    paginatedData() {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      return /* 你的資料陣列，根據分頁計算的範圍截取資料 */;
-    },
-    totalPages() {
-      return Math.ceil(this.totalItems / this.itemsPerPage);
-    },
-    filteredPages() {
-      return this.totalPages > 1
-        ? Array.from({ length: this.totalPages }, (_, index) => index + 1)
-        : [1];
-    },
-  },
-  mounted() {
-    this.calculateItemsPerPage();
-
-    const semester = this.$route.params.semester;
-    const year = this.$route.params.year;
-
-    if (semester && year) {
-      this.resultTitle = `${year}學年第${semester}學期期中預警學生`;
-    }
-  },
-  watch: {
-    // 監聽 totalItems 的變化，當 totalItems 變化時重新計算每頁顯示的資料數
-    totalItems() {
-      this.calculateItemsPerPage();
-    },
-  },
-  methods: {
-    calculateItemsPerPage() {
-      // 假設每行資料的平均高度為 50px
-      const averageRowHeight = 50;
-      // 根據實際情況計算每頁顯示的資料數
-      this.itemsPerPage = Math.floor(window.innerHeight / averageRowHeight);
-    },
-  },
-  setup() {},
 };
 </script>
 

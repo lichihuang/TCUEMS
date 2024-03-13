@@ -338,19 +338,57 @@ export default {
 
     const collegeDepartments = {
       醫學院: [
+        // 大學部
         "醫學系",
-        "護理系",
-        "醫學檢驗生物技術系",
+        "藥學系",
+        "護理學系",
+        "學士後護理學系",
         "公共衛生學系",
+        "醫學檢驗生物技術學系",
         "醫學資訊學系",
         "物理治療學系",
+        "學士後中醫學系",
         "生物醫學暨工程學系",
         "分子生物暨人類遺傳學系",
-        "學士後中醫學系",
+        "醫學影像暨放射科學系",
+        // 研究所
+        "醫學科學研究所(博)",
+        "轉譯醫學博士學位學程",
+        "護理學系碩士班",
+        "公共衛生學系碩士班",
+        "醫學資訊學系碩士班",
+        "醫學檢驗生物技術學系醫學生物技術碩士班",
+        "物理治療學系碩士班",
+        "學士後中醫學系碩士班",
+        "生物醫學暨工程學系碩士班",
+        "醫學系藥理暨毒理學碩士班",
+        "醫學系藥理暨毒理學博士班",
+        "臨床藥學研究所",
+        "醫學系生物醫學碩士班",
+        "分子生物暨人類遺傳學系碩士班",
+        "生物醫學全英語學分學程",
       ],
-      教育傳播學院: ["傳播學系", "兒童發展與家庭教育學系"],
-      人文社會學院: ["東方語文學系", "社會工作學系", "人類發展與心理學系"],
+      教育傳播學院: [
+        // 大學部
+        "傳播學系",
+        "兒童發展與家庭教育學系",
+        // 碩士班
+        "傳播學系碩士班 ",
+        "教育研究所",
+      ],
+      人文社會學院: [
+        // 大學部
+        "東方語文學系中文組",
+        "東方語文學系日文組",
+        "社會工作學系",
+        "人類發展與心理學系",
+        // 碩士班
+        "人類發展與心理學系碩士班",
+        "東方語文學系碩士班",
+        "宗教與人文研究所",
+      ],
       國際暨跨領域學院: [
+        // 大學部
         "外國語文學系",
         "國際服務產業管理學士學位學程",
         "國際數位媒體科技學士學位學程",
@@ -395,6 +433,9 @@ export default {
         }
       } else if (inputSemester.value !== "1" && inputSemester.value !== "2") {
         errorMessages += "請選填學期\n";
+      }
+      if (selectedCollege.value.trim() === "" || selectedDepartment.value.trim() === "") {
+        errorMessages += "請選擇院所及科系\n";
       }
 
       if (errorMessages) {
@@ -491,6 +532,41 @@ export default {
 
               const workbook = new ExcelJS.Workbook();
               const worksheet = workbook.addWorksheet("Sheet 1");
+
+              // 標頭
+              worksheet.addRow([
+                "w_smtr",
+                "w_std_no",
+                "chi_name",
+                "st_state",
+                "dept_name_s",
+                "degree",
+                "sw_class",
+              ]);
+
+              response.data.forEach((rowData) => {
+                worksheet.addRow([
+                  rowData.w_smtr,
+                  rowData.w_std_no,
+                  rowData.chi_name,
+                  rowData.st_state,
+                  rowData.dept_name_s,
+                  rowData.degree,
+                  rowData.sw_class,
+                ]);
+              });
+
+              // 自動調整欄寬
+              /* worksheet.columns.forEach((column) => {
+                if (column.values) {
+                  column.width = Math.max(
+                    column.header.length,
+                    ...column.values.map((value) => (value ? value.toString().length : 0))
+                  );
+                }
+              }); */
+
+              // 將工作簿轉為 Excel 文件
               const blob = await workbook.xlsx.writeBuffer();
               const url = URL.createObjectURL(
                 new Blob([blob], {
@@ -499,9 +575,11 @@ export default {
                 })
               );
 
+              // 下載檔案連結
               const link = document.createElement("a");
               link.href = url;
-              link.download = "EarlyWarning.xlsx";
+              link.download =
+                inputAcademicYear.value + inputSemester.value + "期末預警通知.xlsx";
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);
@@ -515,7 +593,7 @@ export default {
           }
         } catch (error) {
           console.error("Error during API request:", error);
-          // 在這裡處理錯誤
+          // 在這里處理錯誤
           alert("搜尋失敗，請稍後再試。");
         }
       }
