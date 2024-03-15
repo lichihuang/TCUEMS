@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import './assets/global.css';
 import SearchMain from "./views/SearchMain.vue"
-import Result from "./views/Result.vue"
+import ResultMain from "./views/ResultMain.vue"
 import router from './router';
 
 import axios from './axios/axios'
@@ -13,7 +13,7 @@ document.body.style.background = 'url("./LoginVideo.mp4") center center / cover 
 
 const app = createApp(App);
 app.component('SearchMain', SearchMain); // 注冊 SearchMain 組件
-app.component('Result', Result); // 注冊 Result 組件
+app.component('ResultMain', ResultMain); // 注冊 ResultMian 組件
 app.use(router);
 app.mount('#app'); 
 

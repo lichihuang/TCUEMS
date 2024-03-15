@@ -1,320 +1,231 @@
 <template>
-  <BoxModelComponent />
-  <div class="search-block col-md-8 col-lg-5">
-    <h4 class="mb-3" style="margin-top: 10%; text-align: center">期中預警通知列印</h4>
-    <hr class="my-4" />
-    <form
-      class="needs-validation"
-      novalidate=""
-      style="margin-top: 3%; font-size: 1.2rem"
-    >
-      <div class="row g-3">
-        <div class="row g-3">
-          <div class="col-sm-3">
-            <label
-              for="EarlyWarningCourses"
-              class="form-label label-text"
-              style="margin-top: 3%; text-align: left; margin-left: 4%"
-              >➢&nbsp;&nbsp;預警課程數&nbsp;&nbsp;≥</label
-            >
-          </div>
-          <div class="col-sm-2">
-            <input
-              type="text"
-              v-model="inputEarlyWarningCourses"
-              @input="inputEarlyWarningCourses = $event.target.value"
-              class="form-control"
-              id="EarlyWarningCourses"
-              placeholder=""
-              value=""
-              required=""
-              style="margin-top: 1.5%; margin-left: -25%"
-            />
-          </div>
-          <div class="col-sm-5">
-            <label
-              for="EarlyWarningCourses"
-              class="form-label label-text"
-              style="margin-top: 2%; text-align: left; margin-left: -9%"
-              >(&nbsp;即單一學生有幾門課程被預警&nbsp;)</label
-            >
-          </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors" />
+    <meta name="generator" content="Hugo 0.79.0" />
+
+    <meta name="theme-color" content="#7952b3" />
+    <link href="form-validation.css" rel="stylesheet" />
+  </head>
+  <body class="bg-light">
+    <div class="container col-md-12 col-lg-12">
+      <main>
+        <div class="py-5 text-center">
+          <h3>期中預警通知列印</h3>
+          <hr />
         </div>
 
-        <div class="col-sm-4">
-          <label
-            for="EarlyWarningRequiredCourses"
-            class="form-label label-text"
-            style="margin-top: 4%; text-align: left; margin-left: 3%"
-            >➢&nbsp;&nbsp;或者必修課預警課程數</label
-          >
-        </div>
-        <div class="col-sm-2">
-          <input
-            v-model="inputEarlyWarningRequiredCourses"
-            @input="inputEarlyWarningRequiredCourses = $event.target.value"
-            type="text"
-            class="form-control"
-            id="EarlyWarningRequiredCourses"
-            placeholder=""
-            value=""
-            required=""
-            style="margin-top: 4%; margin-left: -23%"
-          />
-        </div>
-        <div class="col-sm-6">
-          <label
-            for="EarlyWarningRequiredCourses"
-            class="form-label label-text"
-            style="margin-top: 2%; text-align: left; margin-left: -6%"
-            >(&nbsp;必修課是指學生選課檔別為必修之課程&nbsp;)</label
-          >
-        </div>
-
-        <div class="col-sm-3" style="margin-left: 20px">
-          <label
-            for="AcademicYear"
-            class="form-label label-text"
-            style="margin-top: 5%; text-align: left; display: block; margin-left: -6.5%"
-            >➢&nbsp;&nbsp;期中預警：</label
-          >
-        </div>
-        <div class="col-sm-2">
-          <input
-            v-model="inputAcademicYear"
-            @input="inputAcademicYear = $event.target.value"
-            type="text"
-            class="form-control"
-            id="AcademicYear"
-            placeholder=""
-            value=""
-            required=""
-            style="margin-top: 2.5%; margin-left: -65%"
-          />
-          <div class="invalid-feedback">請輸入欲查詢之學年</div>
-        </div>
-        <div class="col-sm-1">
-          <label
-            for="lastName"
-            class="form-label label-text"
-            style="margin-top: 15%; margin-left: -150%"
-            >學年</label
-          >
-        </div>
-        <div class="col-sm-2">
-          <div class="form-check sm-1" style="margin-top: 5%">
-            <input
-              v-model="inputSemester"
-              id="FirstSemester"
-              name="paymentMethod"
-              type="radio"
-              class="form-check-input"
-              required=""
-              style="margin-top: 5%; margin-left: -100%"
-              value="1"
-            />
-            <label
-              class="form-check-label sm-1"
-              for="FirstSemester"
-              style="margin-top: 1%; margin-left: -70%"
-              >上學期</label
-            >
-          </div>
-        </div>
-        <div class="col-sm-2">
-          <div class="form-check" style="margin-top: 5%">
-            <input
-              v-model="inputSemester"
-              id="SecondSemester"
-              name="paymentMethod"
-              type="radio"
-              class="form-check-input"
-              required=""
-              style="margin-top: 5%; margin-left: -135%"
-              value="2"
-            />
-            <label
-              class="form-check-label sm-1"
-              for="SecondSemester"
-              style="margin-top: 1%; margin-left: -104%"
-              >下學期</label
-            >
-          </div>
-        </div>
-
-        <div class="col-sm-3" style="margin-left: 20px">
-          <label
-            for="lastName"
-            class="form-label label-text"
-            style="margin-top: 5%; text-align: left; display: block; margin-left: -6.5%"
-            >➢&nbsp;&nbsp;學生系所：</label
-          >
-        </div>
-
-        <div>
-          <div class="col-md-3" style="margin-top: 2.5%">
-            <select
-              v-model="selectedCollege"
-              class="form-select"
-              id="college"
-              required=""
-              style="margin-top: -39%; margin-left: 75%"
-            >
-              <option value="">院所</option>
-              <option value="醫學院">醫學院</option>
-              <option value="教育傳播學院">教育傳播學院</option>
-              <option value="人文社會學院">人文社會學院</option>
-              <option value="國際暨跨領域學院">國際暨跨領域學院</option>
-            </select>
-            <div class="invalid-feedback">Please select a valid country.</div>
-          </div>
-
-          <div class="col-md-4" style="margin-top: 2.5%">
-            <select
-              v-model="selectedDepartment"
-              class="form-select"
-              id="state"
-              required=""
-              style="margin-top: -21.25%; margin-left: 135%"
-            >
-              <option value="">科系</option>
-              <option v-for="department in getDepartments" :key="department">
-                {{ department }}
-              </option>
-            </select>
-            <div class="invalid-feedback">Please provide a valid state.</div>
-          </div>
-        </div>
-
-        <div class="col-sm-2">
-          <label
-            for="studentID"
-            class="form-label label-text"
-            style="margin-top: 4%; margin-left: 6%"
-            >➢&nbsp;&nbsp;學號：</label
-          >
-        </div>
-        <div class="col-sm-4">
-          <input
-            v-model="inputStudentID"
-            type="text"
-            class="form-control"
-            id="studentID"
-            placeholder=""
-            value=""
-            required=""
-            style="margin-top: -0.5%; margin-left: -11%"
-          />
-        </div>
-        <div class="col-sm-3">
-          <label
-            for="firstName"
-            class="form-label label-text"
-            style="margin-top: 3%; text-align: left"
-          ></label>
-        </div>
-
-        <div class="col-sm-3">
-          <label
-            for="firstName"
-            class="form-label label-text"
-            style="margin-top: 3%; text-align: left"
-            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label
-          >
-        </div>
-        <div
-          class="d-flex justify-content-end"
-          style="margin-left: -20px; margin-top: 5px"
-        >
-          <div class="col-sm-1">
-            <button
-              @click="buttonSearch"
-              class="w-100 btn btn-primary btn-md btn-custom mx-2"
-              type="submit"
-            >
-              查詢
-            </button>
-          </div>
-          <div class="col-sm-2">
-            <button
-              @click="buttonToExcel"
-              class="w-100 btn btn-primary btn-md btn-custom mx-2"
-              type="submit"
-            >
-              轉出Excel檔
-            </button>
-          </div>
-          <div class="col-sm-1">
-            <button
-              @click="buttonClear"
-              class="w-100 btn btn-primary btn-md btn-custom mx-2"
-              type="submit"
-            >
-              清除
-            </button>
-          </div>
-        </div>
-        <hr class="my-4" />
-
-        <footer role="contentinfo" class="py-6 lh-1 bg-white" style="margin-top: -25px">
-          <div class="bd-callout bd-callout-warning">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-2">
-                  <h5 class="h5 mb-4">列印說明</h5>
+        <div class="row g-3 search-form">
+          <div class="col-md-8 col-lg-8">
+            <form class="needs-validation col-sm-12" novalidate="">
+              <div class="row g-3">
+                <div class="col-sm-6">
+                  <label for="firstName" class="form-label"
+                    >&nbsp;➢&nbsp;預警課程數&nbsp;(&nbsp;即單一學生有幾門課程被預警&nbsp;)&nbsp;≥</label
+                  >
+                  <input
+                    type="text"
+                    v-model="inputEarlyWarningCourses"
+                    @input="inputEarlyWarningCourses = $event.target.value"
+                    class="form-control"
+                    id="EarlyWarningCourses"
+                    placeholder=""
+                    value=""
+                    required=""
+                  />
+                  <div class="invalid-feedback">Valid first name is required.</div>
                 </div>
-                <div class="col-md-21">
-                  <div class="row">
-                    <div class="col-md-21 col-sm-21">
-                      <ul
-                        class="list-unstyled"
-                        style="
-                          text-align: left;
-                          line-height: 1.5;
-                          font-size: 1rem;
-                          line-height: 1.8;
-                        "
-                      >
-                        <li>
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)&nbsp;系統將列印出指定之期中預警及課程數學生名單，供使用者選擇確定列印範圍
-                        </li>
-                        <li>
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)&nbsp;列印注意事項：
-                          <ul
-                            style="
-                              list-style-type: none;
-                              text-align: left;
-                              line-height: 1.8;
-                              margin-left: -2%;
-                            "
-                          >
-                            <li>
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▪&nbsp;&nbsp;IE的檔案：設定列印格式，將頁首、頁尾值清空，設為A4直印，同時上下左右邊界設定為10。
-                            </li>
-                            <li>
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▪&nbsp;&nbsp;IE的工具：網際網路選項-進階-列印，勾選列印背景的彩色及影像。
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
+
+                <div class="col-sm-6">
+                  <label for="lastName" class="form-label"
+                    >&nbsp;➢&nbsp;或預警必修課程數&nbsp;(&nbsp;必修課指選課檔別為必修之課程&nbsp;)</label
+                  >
+                  <input
+                    type="text"
+                    v-model="inputEarlyWarningRequiredCourses"
+                    @input="inputEarlyWarningRequiredCourses = $event.target.value"
+                    class="form-control"
+                    id="EarlyWarningRequiredCourses"
+                    placeholder=""
+                    value=""
+                    required=""
+                  />
+                  <div class="invalid-feedback">Valid last name is required.</div>
+                </div>
+
+                <div class="col-6">
+                  <label for="address" class="form-label">&nbsp;➢&nbsp;學號</label>
+                  <input
+                    type="text"
+                    v-model="inputStudentID"
+                    class="form-control"
+                    id="studentID"
+                    placeholder=""
+                    required=""
+                  />
+                  <div class="invalid-feedback">Please enter your shipping address.</div>
+                </div>
+
+                <div class="col-4">
+                  <label for="address" class="form-label"
+                    >&nbsp;➢&nbsp;期中預警之學期</label
+                  >
+                  <input
+                    type="text"
+                    v-model="inputAcademicYear"
+                    @input="inputAcademicYear = $event.target.value"
+                    class="form-control"
+                    id="AcademicYear"
+                    placeholder="請輸入學年"
+                    required=""
+                  />
+                  <div class="invalid-feedback">Please enter your shipping address.</div>
+                </div>
+
+                <div class="col-2">
+                  <label></label>
+                  <div class="form-check">
+                    <input
+                      v-model="inputSemester"
+                      id="FirstSemester"
+                      name="ChooseSemester"
+                      type="radio"
+                      class="form-check-input"
+                      checked=""
+                      required=""
+                      value="1"
+                    />
+                    <label class="form-check-label" for="FirstSemester"
+                      >&nbsp;上學期</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      v-model="inputSemester"
+                      id="SecondSemester"
+                      name="ChooseSemester"
+                      type="radio"
+                      class="form-check-input"
+                      checked=""
+                      required=""
+                      value="2"
+                    />
+                    <label class="form-check-label" for="SecondSemester"
+                      >&nbsp;下學期</label
+                    >
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <label for="country" class="form-label">&nbsp;➢&nbsp;院所</label>
+                  <select
+                    v-model="selectedCollege"
+                    class="form-select"
+                    id="country"
+                    required=""
+                  >
+                    <option value="">請選擇院所 ...</option>
+                    <option value="醫學院">醫學院</option>
+                    <option value="教育傳播學院">教育傳播學院</option>
+                    <option value="人文社會學院">人文社會學院</option>
+                    <option value="國際暨跨領域學院">國際暨跨領域學院</option>
+                  </select>
+                  <div class="invalid-feedback">Please select a valid country.</div>
+                </div>
+
+                <div class="col-6">
+                  <label for="state" class="form-label">&nbsp;➢&nbsp;科系</label>
+                  <select
+                    v-model="selectedDepartment"
+                    class="form-select"
+                    id="state"
+                    required=""
+                  >
+                    <option value="">請選擇科系 ...</option>
+                    <option v-for="department in getDepartments" :key="department">
+                      {{ department }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">Please provide a valid state.</div>
+                </div>
+                <div class="col-12 btn-box"></div>
+                <div class="col-3 btn-box"></div>
+                <div class="col-2 btn-box">
+                  <button
+                    @click="buttonSearch"
+                    class="btn-style w-10 btn btn-primary btn-md"
+                    type="submit"
+                  >
+                    查詢
+                  </button>
+                </div>
+                <div class="col-2 btn-box">
+                  <button
+                    @click="buttonToExcel"
+                    class="btn-style w-10 btn btn-primary btn-md"
+                    type="button"
+                  >
+                    匯出Excel
+                  </button>
+                </div>
+                <div class="col-2 btn-box">
+                  <button
+                    @click="buttonClear"
+                    class="btn-style w-10 btn btn-primary btn-md"
+                    type="button"
+                  >
+                    清除
+                  </button>
+                </div>
+                <div class="col-3 btn-box"></div>
+              </div>
+
+              <hr class="my-4" />
+              <div class="bd-callout bd-callout-warning">
+                <div class="row">
+                  <div class="col-md-2">
+                    <h5 class="h5 mb-4">&nbsp;&nbsp;列印說明</h5>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12">
+                        <ul class="list-unstyled">
+                          <li>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)&nbsp;系統將列印出指定之期中預警及課程數學生名單，供使用者選擇確定列印範圍
+                          </li>
+                          <li>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)&nbsp;列印注意事項：
+                            <ul class="list-content-unstyled">
+                              <li>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▪&nbsp;&nbsp;&nbsp;&nbsp;IE的檔案：設定列印格式，將頁首、頁尾值清空，設為A4直印，同時上下左右邊界設定為10。
+                              </li>
+                              <li>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▪&nbsp;&nbsp;&nbsp;&nbsp;IE的工具：網際網路選項-進階-列印，勾選列印背景的彩色及影像。
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
-        </footer>
-      </div>
-    </form>
-  </div>
-  <CopyrightNotice />
-  <a href="https://lordicon.com/" class="icon-address">Icons by Lordicon.com</a>
+        </div>
+      </main>
+    </div>
+
+    <CopyrightNotice />
+    <a href="https://lordicon.com/" class="icon-address">Icons by Lordicon.com</a>
+  </body>
 </template>
 
 <script>
 import { ref, computed, watchEffect } from "vue";
 import { useRouter } from "vue-router";
-import BoxModelComponent from "../components/BoxModelComponent.vue";
 import ExcelJS from "exceljs";
 import CopyrightNotice from "../components/CopyrightNotice.vue";
 import axios from "axios";
@@ -322,7 +233,6 @@ import axios from "axios";
 export default {
   name: "Search",
   components: {
-    BoxModelComponent,
     CopyrightNotice,
   },
   setup() {
@@ -467,7 +377,7 @@ export default {
           if (response && response.status === 200) {
             if (response.data && response.data.length > 0) {
               console.log("相符資料：", response.data);
-              await router.push({ name: "Result" });
+              await router.push({ name: "ResultMain" });
             } else {
               console.log("無相符資料");
               alert("無相符資料");
@@ -497,6 +407,9 @@ export default {
         }
       } else if (inputSemester.value !== "1" && inputSemester.value !== "2") {
         errorMessages += "請選填學期\n";
+      }
+      if (selectedCollege.value.trim() === "" || selectedDepartment.value.trim() === "") {
+        errorMessages += "請選擇院所及科系\n";
       }
 
       if (errorMessages) {
@@ -558,13 +471,13 @@ export default {
 
               // 自動調整欄寬
               /* worksheet.columns.forEach((column) => {
-                if (column.values) {
-                  column.width = Math.max(
-                    column.header.length,
-                    ...column.values.map((value) => (value ? value.toString().length : 0))
-                  );
-                }
-              }); */
+                  if (column.values) {
+                    column.width = Math.max(
+                      column.header.length,
+                      ...column.values.map((value) => (value ? value.toString().length : 0))
+                    );
+                  }
+                }); */
 
               // 將工作簿轉為 Excel 文件
               const blob = await workbook.xlsx.writeBuffer();
@@ -630,14 +543,104 @@ export default {
 </script>
 
 <style scoped>
-.btn-custom {
-  background-color: #4682b4;
-  border-color: #ced4da;
-}
-.btn-custom:hover {
-  background-color: #0f4f85;
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 
+element.style {
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    scroll-behavior: smooth;
+  }
+}
+:root {
+  --bs-blue: #0d6efd;
+  --bs-indigo: #6610f2;
+  --bs-purple: #6f42c1;
+  --bs-pink: #d63384;
+  --bs-red: #dc3545;
+  --bs-orange: #fd7e14;
+  --bs-yellow: #ffc107;
+  --bs-green: #198754;
+  --bs-teal: #20c997;
+  --bs-cyan: #0dcaf0;
+  --bs-white: #fff;
+  --bs-gray: #6c757d;
+  --bs-gray-dark: #343a40;
+  --bs-primary: #0d6efd;
+  --bs-secondary: #6c757d;
+  --bs-success: #198754;
+  --bs-info: #0dcaf0;
+  --bs-warning: #ffc107;
+  --bs-danger: #dc3545;
+  --bs-light: #f8f9fa;
+  --bs-dark: #212529;
+  --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  --bs-gradient: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0)
+  );
+}
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+html[屬性樣式] {
+  -webkit-locale: "en";
+}
+
+使用者代理程式樣式表 html {
+  display: block;
+}
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+.container {
+  margin-top: 7%;
+  margin-bottom: 7%;
+}
+.search-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.btn-style {
+  background-color: #4682b4;
+  border-color: #ced4da;
+  width: 150px;
+}
+.btn-style:hover {
+  background-color: #0f4f85;
+}
+.btn-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.icon-address {
+  font-size: 7px;
+  position: fixed;
+  top: 905px;
+  left: 1838px;
+}
 .bd-callout-warning {
   --bd-callout-color: var(--bs-warning-text-emphasis);
   --bd-callout-bg: var(--bs-warning-bg-subtle);
@@ -653,33 +656,22 @@ export default {
   background-color: var(--bd-callout-bg, var(--bs-gray-100));
   border-left: 0.25rem solid var(--bd-callout-border, var(--bs-gray-300));
 }
-*,
-::after,
-::before {
-  box-sizing: border-box;
+.list-unstyled {
+  text-align: left;
+  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.8;
 }
-使用者代理程式樣式表 div {
-  display: block;
-}
-.icon-address {
-  font-size: 7px;
-  position: fixed;
-  top: 905px;
-  left: 1838px;
-}
-.search-block {
-  margin-top: 9%;
-  margin-left: 29%;
+.list-content-unstyled {
+  list-style-type: none;
+  text-align: left;
+  line-height: 1.8;
+  margin-left: -2%;
 }
 
-@media screen and (max-width: 767px) {
-  .icon-address {
-    font-size: 14px; /* 依據需求調整大小 */
-    position: static; /* 移除 fixed 定位，讓它在文件流中正常顯示 */
-    top: auto;
-    left: auto;
-    margin-top: 10px; /* 依據需求調整距離上方的距離 */
-    text-align: center; /* 讓文字在小螢幕上置中 */
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
   }
 }
 </style>

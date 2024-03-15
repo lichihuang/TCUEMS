@@ -20,11 +20,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td class="text-center"><input type="checkbox" /></td>
-          <td>ipsum</td>
-          <td>dolor</td>
+        <tr v-for="(item, index) in paginatedData" :key="index">
+          <td>{{ index + 1 }}</td>
+          <td class="text-center">
+            <input type="checkbox" v-model="printSelection[index]" />
+          </td>
+          <td>{{ item.student }}</td>
+          <td>{{ item.warningRecord }}</td>
         </tr>
       </tbody>
     </table>
@@ -78,24 +80,26 @@
 
 <script>
 import { ref, computed, watch, onMounted } from "vue";
-import { useRoute } from "vue-router"; // 引入 useRoute 方法
-import Header from "../components/Header.vue";
-import BoxModelComponent from "../components/BoxModelComponent.vue";
-import CopyrightNotice from "../components/CopyrightNotice.vue";
+import { useRoute } from "vue-router";
+import Header from "./Header.vue";
+import CopyrightNotice from "./CopyrightNotice.vue";
+import axios from "axios";
 
 export default {
-  name: "Result",
+  name: "ResultTemp",
+  props: ["searchData"],
   components: {
     Header,
-    BoxModelComponent,
     CopyrightNotice,
   },
-  setup() {
+  setup(props) {
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
     const totalItems = ref(0);
     const totalPages = ref(1);
     const resultTitle = ref("");
+    const apiData = ref([]);
+    const printSelection = ref([]);
 
     const handlePageChange = (page) => {
       currentPage.value = page;
@@ -105,18 +109,12 @@ export default {
       currentPage.value = page;
     };
 
-    const paginatedData = computed(() => {
-      const startIndex = (currentPage.value - 1) * itemsPerPage.value;
-      const endIndex = startIndex + itemsPerPage.value;
-      return /* 你的数据数组，根据分页计算的范围截取数据 */;
-    });
-
     const calculateItemsPerPage = () => {
       const averageRowHeight = 50;
       itemsPerPage.value = Math.floor(window.innerHeight / averageRowHeight);
     };
 
-    onMounted(() => {
+    onMounted(async () => {
       calculateItemsPerPage();
 
       const route = useRoute();
@@ -124,8 +122,32 @@ export default {
       const year = route.params.year;
 
       if (semester && year) {
-        resultTitle.value = `${year}學年第${semester}学期期中預警學生`;
+        resultTitle.value = `${year}學年第${semester}學期期期中預警學生`;
       }
+
+      const requestData = {
+        // 根据实际需要设置请求的数据
+      };
+
+      try {
+        const response = await axios.post(
+          "http://localhost:5256/api/SemesterWarning/Search",
+          requestData
+        );
+        apiData.value = response.data;
+        totalItems.value = response.data.length;
+        totalPages.value = Math.ceil(totalItems.value / itemsPerPage.value);
+        printSelection.value = Array(props.searchData.length).fill(false);
+      } catch (error) {
+        console.error("Error during API request:", error);
+        alert("搜尋失敗，請稍後再試。");
+      }
+    });
+
+    const paginatedData = computed(() => {
+      const startIndex = (currentPage.value - 1) * itemsPerPage.value;
+      const endIndex = startIndex + itemsPerPage.value;
+      return apiData.value.slice(startIndex, endIndex);
     });
 
     watch(totalItems, () => {
@@ -148,6 +170,7 @@ export default {
       goToPage,
       paginatedData,
       filteredPages,
+      printSelection,
     };
   },
 };

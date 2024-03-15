@@ -1,5 +1,4 @@
 <template>
-  <BoxModelComponent />
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top align-items-center">
     <div class="container-fluid d-flex align-items-center justify-content-between">
       <div class="navbar-brand sm-1">
@@ -33,13 +32,9 @@ import lottie from "lottie-web";
 import { defineElement } from "@lordicon/element";
 import { useRouter } from "vue-router";
 defineElement(lottie.loadAnimation);
-import BoxModelComponent from "../components/BoxModelComponent.vue";
-
 export default {
   name: "Header",
-  components: {
-    BoxModelComponent,
-  },
+  components: {},
   setup() {
     const router = useRouter();
     const home = async () => {
@@ -104,7 +99,7 @@ nav {
   nav {
     width: 55%;
     padding: 10px;
-    height: 7.5%;
+    height: 7%;
   }
 
   .navbar-nav .nav-link .bi {
@@ -112,7 +107,7 @@ nav {
   }
 
   .nav-link {
-    margin-top: 10%;
+    margin-top: -10%;
     width: 100%;
   }
 
@@ -122,17 +117,17 @@ nav {
 
   .btn-img {
     width: 80%; /* 依據需求調整大小 */
-    margin-top: 10px;
+    margin-top: 1%;
   }
   .top-logo {
     width: 60%; /* 依據需求調整大小 */
-    margin-top: 10px;
+    margin-top: 1%;
     margin-left: 19.5%;
   }
   .header-title {
-    font-size: 1.3rem;
-    margin-top: -12%;
-    margin-left: 35%;
+    font-size: 1.25rem;
+    margin-top: -14%;
+    margin-left: 36%;
     margin-bottom: 0;
   }
   .navbar-nav {

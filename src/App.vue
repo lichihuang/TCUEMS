@@ -2,8 +2,10 @@
 import Login from "./components/Login.vue";
 import Header from "./components/Header.vue";
 import Search from "./components/Search.vue";
+import Result from "./components/Result.vue";
 import SearchMain from "./views/SearchMain.vue";
-/*import 'lord-icon-element/lord-icon.js';*/
+import ResultMain from "./views/ResultMain.vue";
+/* import "lord-icon-element/lord-icon.js"; */
 
 export default {
   name: "App",
@@ -11,7 +13,9 @@ export default {
     Login,
     Header,
     Search,
+    Result,
     SearchMain,
+    ResultMain,
   },
 };
 </script>
@@ -30,3 +34,4 @@ export default {
   margin-top: 60px;
 }
 </style>
+./views/Result.vue

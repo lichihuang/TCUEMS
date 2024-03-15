@@ -1,19 +1,19 @@
 <template>
   <div>
     <Header />
-    <Search />
+    <Result />
   </div>
 </template>
 
 <script>
 import Header from "../components/Header.vue";
-import Search from "../components/Search.vue";
+import Result from "../components/Result.vue";
 
 export default {
   name: "SearchMain",
   components: {
     Header,
-    Search,
+    Result,
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <p class="mb-0" style="font-size: 0.7rem; text-align: center; margin-buttom: 0%">
+    <p class="mb-0">
       CopyRight © 2024 -
       <a href="index.html">Tzu Chi University Computer Center, All Right Reserved</a>.
     </p>
@@ -14,6 +14,10 @@ export default {
 </script>
 
 <style scoped>
+.footer {
+  font-size: 0.7rem;
+  text-align: center;
+}
 @media (min-width: 768px) {
   .footer {
     position: fixed;
