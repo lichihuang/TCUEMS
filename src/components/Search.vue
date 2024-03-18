@@ -551,8 +551,6 @@ export default {
   user-select: none;
 }
 
-element.style {
-}
 @media (prefers-reduced-motion: no-preference) {
   :root {
     scroll-behavior: smooth;
@@ -614,7 +612,7 @@ html[屬性樣式] {
   box-sizing: border-box;
 }
 .container {
-  margin-top: 7%;
+  margin-top: 5.5%;
   margin-bottom: 7%;
 }
 .search-form {

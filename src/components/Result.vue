@@ -12,11 +12,127 @@
   <body class="bg-light">
     <div class="container col-md-12 col-lg-12">
       <main>
-        <Header />
         <div class="py-5 text-center">
           <h3>期中預警通知列印</h3>
           <hr />
         </div>
+        <section>
+          <div class="card">
+            <div class="card-header">
+              <!----><!----><!----><!----><!----><!----><!----><!---->
+              <div class="form-outline" style="">
+                <input class="form-control" id="MDBInput-276894" /><label
+                  class="form-label"
+                  for="MDBInput-276894"
+                  >Search</label
+                ><!----><!----><!----><!---->
+                <div class="form-notch">
+                  <div class="form-notch-leading" style="width: 9px"></div>
+                  <div class="form-notch-middle" style="width: 47.2px"></div>
+                  <div class="form-notch-trailing"></div>
+                </div>
+              </div>
+              <!---->
+            </div>
+            <div class="card-body">
+              <div
+                class="datatable datatable-bordered datatable-striped"
+                style="max-width: 100%"
+              >
+                <div
+                  class="datatable-inner table-responsive"
+                  style="overflow: auto; position: relative"
+                >
+                  <div
+                    class="ps ps--active-x"
+                    style="width: 100%; height: 100%; background-color: inherit"
+                  >
+                    <div class="table-responsive">
+                      <table class="table table-striped table-sm7 mx-auto">
+                        <thead>
+                          <tr>
+                            <th class="text-center">編號</th>
+                            <th class="text-center">選擇列印</th>
+                            <th>學生</th>
+                            <th>期中預警紀錄</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(item, index) in paginatedData" :key="index">
+                            <td class="text-center">{{ index + 1 }}</td>
+                            <td class="text-center">
+                              <input type="checkbox" v-model="printSelection[index]" />
+                            </td>
+                            <td>{{ item.student }}</td>
+                            <td>{{ item.warningRecord }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="ps__rail-x" style="left: 0px; bottom: 0px; width: 792px">
+                      <div
+                        class="ps__thumb-x"
+                        tabindex="0"
+                        style="left: 0px; width: 701px"
+                      ></div>
+                    </div>
+                    <div class="ps__rail-y" style="top: 0px; right: 0px">
+                      <div
+                        class="ps__thumb-y"
+                        tabindex="0"
+                        style="top: 0px; height: 0px"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <!----><!---->
+                <div>
+                  <nav aria-label="Page navigation example" class="pagination-container">
+                    <ul class="pagination">
+                      <li class="page-item">
+                        <a
+                          class="page-link"
+                          href="#"
+                          aria-label="Previous"
+                          @click="goToPage(currentPage - 1)"
+                          :disabled="currentPage === 1"
+                        >
+                          <span aria-hidden="true">&laquo;</span>
+                        </a>
+                      </li>
+
+                      <li class="page-item" v-for="page in filteredPages" :key="page">
+                        <a
+                          class="page-link"
+                          href="#"
+                          @click="goToPage(page)"
+                          :style="{
+                            color: currentPage === page ? '#4682b4' : 'black',
+                            textDecoration: currentPage === page ? 'underline' : 'none',
+                          }"
+                          :class="{ active: currentPage === page }"
+                          >{{ page }}</a
+                        >
+                      </li>
+
+                      <li class="page-item">
+                        <a
+                          class="page-link"
+                          href="#"
+                          aria-label="Next"
+                          @click="goToPage(currentPage + 1)"
+                          :disabled="currentPage === totalPages"
+                        >
+                          <span aria-hidden="true">&raquo;</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
     <CopyrightNotice />
@@ -32,7 +148,7 @@ import CopyrightNotice from "./CopyrightNotice.vue";
 import axios from "axios";
 
 export default {
-  name: "Result",
+  name: "ResultTemp",
   props: ["searchData"],
   components: {
     Header,
@@ -131,8 +247,6 @@ export default {
   user-select: none;
 }
 
-element.style {
-}
 @media (prefers-reduced-motion: no-preference) {
   :root {
     scroll-behavior: smooth;
@@ -179,9 +293,6 @@ element.style {
 html[屬性樣式] {
   -webkit-locale: "en";
 }
-使用者代理程式樣式表 :root {
-  view-transition-name: root;
-}
 使用者代理程式樣式表 html {
   display: block;
 }
@@ -196,8 +307,8 @@ html[屬性樣式] {
   box-sizing: border-box;
 }
 .container {
-  margin-top: 7%;
-  margin-bottom: 20%;
+  margin-top: 5.5%;
+  margin-bottom: 7%;
 }
 .icon-address {
   font-size: 7px;
@@ -219,6 +330,74 @@ html[屬性樣式] {
   color: var(--bd-callout-color, inherit);
   background-color: var(--bd-callout-bg, var(--bs-gray-100));
   border-left: 0.25rem solid var(--bd-callout-border, var(--bs-gray-300));
+}
+.table th:first-child,
+.table td:first-child {
+  width: 6%;
+}
+.table th:second-child,
+.table td:second-child {
+  width: 1%;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 15%;
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 27%;
+}
+
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: 55%;
+}
+.icon-address {
+  font-size: 7px;
+  position: fixed;
+  top: 905px;
+  left: 1838px;
+}
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+/**/
+.pagination-container .page-link[aria-label="Previous"],
+.pagination-container .page-link[aria-label="Next"] {
+  color: #4682b4;
+  background-color: white;
+  border-color: #ced4da;
+}
+
+/* Change color and background of page numbers */
+.pagination-container .page-item .page-link {
+  color: #4682b4;
+  background-color: white;
+  border-color: #ced4da;
+}
+
+/* Change background color of the active page */
+.pagination-container .page-item.active .page-link {
+  background-color: #4682b4;
+  color: white;
+  border-color: #ced4da;
+}
+#app {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+}
+.card {
+  border: 0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.5rem;
+  margin-top: -3%;
 }
 
 @media (min-width: 768px) {

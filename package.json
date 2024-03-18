@@ -16,6 +16,7 @@
     "exceljs": "^4.4.0",
     "http-status": "^1.7.4",
     "lottie-web": "^5.12.2",
+    "mdb-vue-ui-kit": "^4.1.1",
     "sweetalert2": "^10.16.11",
     "vue": "^3.4.15",
     "vue-router": "^4.3.0",
