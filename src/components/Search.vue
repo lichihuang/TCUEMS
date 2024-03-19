@@ -229,6 +229,8 @@ import { useRouter } from "vue-router";
 import ExcelJS from "exceljs";
 import CopyrightNotice from "../components/CopyrightNotice.vue";
 import axios from "axios";
+import { createStore } from "../store/pinia";
+import { useApiDataStore } from "../store/apiDataStore";
 
 export default {
   name: "Search",
@@ -245,6 +247,31 @@ export default {
     const inputAcademicYear = ref("");
     const inputSemester = ref("");
     const inputStudentID = ref("");
+
+    const semesterWarnings = ref([]); // 存抓取到的Data
+
+    const apiDataStore = useApiDataStore();
+
+    const store = createStore({
+      // 定义 store 的状态、动作和 getter
+      state: () => ({
+        apiData: [], // 存储 API 数据的状态
+      }),
+
+      // 定义修改状态的动作
+      actions: {
+        setApiData(data) {
+          this.apiData = data;
+        },
+      },
+
+      // 定义获取状态的 getter
+      getters: {
+        getApiData() {
+          return this.apiData;
+        },
+      },
+    });
 
     const collegeDepartments = {
       醫學院: [
@@ -377,13 +404,15 @@ export default {
           if (response && response.status === 200) {
             if (response.data && response.data.length > 0) {
               console.log("相符資料：", response.data);
+              /* store.apiDataStore.setApiData(response.data); */
+              apiDataStore.setApiData(response.data);
               await router.push({ name: "ResultMain" });
             } else {
               console.log("無相符資料");
               alert("無相符資料");
             }
           } else {
-            console.log("搜尋失敗");
+            console.error("API 请求失败:", response.statusText);
             alert("搜尋失敗，請稍後再試。");
           }
         } catch (error) {
@@ -537,6 +566,7 @@ export default {
       buttonSearch,
       buttonClear,
       buttonToExcel,
+      semesterWarnings,
     };
   },
 };

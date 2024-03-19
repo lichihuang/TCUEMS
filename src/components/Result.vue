@@ -20,19 +20,32 @@
           <div class="card">
             <div class="card-header">
               <!----><!----><!----><!----><!----><!----><!----><!---->
-              <div class="form-outline" style="">
-                <input class="form-control" id="MDBInput-276894" /><label
+              <div class="form-outline">
+                <input
+                  class="form-control"
+                  id="searchInput"
+                  v-model="searchBox"
+                  @focus="isInputFocused = true"
+                  @blur="hideSearchLabel"
+                  @keydown.enter="hideSearchLabel"
+                />
+                <label
                   class="form-label"
-                  for="MDBInput-276894"
-                  >Search</label
-                ><!----><!----><!----><!---->
+                  for="searchInput"
+                  :class="{ active: searchBox || isInputFocused }"
+                  :style="{
+                    top: isInputFocused ? '0' : '',
+                    fontSize: isInputFocused ? '12px' : '16px',
+                  }"
+                >
+                  Search
+                </label>
                 <div class="form-notch">
                   <div class="form-notch-leading" style="width: 9px"></div>
                   <div class="form-notch-middle" style="width: 47.2px"></div>
                   <div class="form-notch-trailing"></div>
                 </div>
               </div>
-              <!---->
             </div>
             <div class="card-body">
               <div
@@ -48,6 +61,26 @@
                     style="width: 100%; height: 100%; background-color: inherit"
                   >
                     <div class="table-responsive">
+                      <!-- <table class="table table-striped table-sm7 mx-auto">
+                        <thead>
+                          <tr>
+                            <th class="text-center">編號</th>
+                            <th class="text-center">選擇列印</th>
+                            <th>學生</th>
+                            <th>期中預警紀錄</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(item, index) in paginatedData" :key="index">
+                            <td class="text-center">{{ index + 1 }}</td>
+                            <td class="text-center">
+                              <input type="checkbox" v-model="printSelection[index]" />
+                            </td>
+                            <td>{{ item.student }}</td>
+                            <td>{{ item.warningRecord }}</td>
+                          </tr>
+                        </tbody>
+                      </table> -->
                       <table class="table table-striped table-sm7 mx-auto">
                         <thead>
                           <tr>
@@ -141,85 +174,46 @@
 </template>
 
 <script>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import Header from "./Header.vue";
-import CopyrightNotice from "./CopyrightNotice.vue";
-import axios from "axios";
+import { useApiDataStore } from "../store/apiDataStore";
+import CopyrightNotice from "../components/CopyrightNotice.vue";
 
 export default {
   name: "ResultTemp",
-  props: ["searchData"],
   components: {
-    Header,
     CopyrightNotice,
   },
+  props: ["searchData"],
   setup(props) {
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
     const totalItems = ref(0);
     const totalPages = ref(1);
     const resultTitle = ref("");
-    const apiData = ref([]);
     const printSelection = ref([]);
+    const searchBox = ref("");
+    const filteredPages = ref([]);
+    const isInputFocused = ref(false);
 
-    const handlePageChange = (page) => {
-      currentPage.value = page;
-    };
-
-    const goToPage = (page) => {
-      currentPage.value = page;
-    };
-
-    const calculateItemsPerPage = () => {
-      const averageRowHeight = 50;
-      itemsPerPage.value = Math.floor(window.innerHeight / averageRowHeight);
-    };
+    const apiDataStore = useApiDataStore(); // 使用 apiDataStore
 
     onMounted(async () => {
-      calculateItemsPerPage();
-
       const route = useRoute();
       const semester = route.params.semester;
       const year = route.params.year;
 
       if (semester && year) {
-        resultTitle.value = `${year}學年第${semester}學期期期中預警學生`;
-      }
-
-      const requestData = {
-        // 根据实际需要设置请求的数据
-      };
-
-      try {
-        const response = await axios.post(
-          "http://localhost:5256/api/SemesterWarning/Search",
-          requestData
-        );
-        apiData.value = response.data;
-        totalItems.value = response.data.length;
-        totalPages.value = Math.ceil(totalItems.value / itemsPerPage.value);
-        printSelection.value = Array(props.searchData.length).fill(false);
-      } catch (error) {
-        console.error("Error during API request:", error);
-        alert("搜尋失敗，請稍後再試。");
+        resultTitle.value = `${year}學年第${semester}學期期中預警學生`;
       }
     });
+
+    const apiData = computed(() => apiDataStore.getApiData); // 從 apiDataStore 中取得資料
 
     const paginatedData = computed(() => {
       const startIndex = (currentPage.value - 1) * itemsPerPage.value;
       const endIndex = startIndex + itemsPerPage.value;
-      return apiData.value.slice(startIndex, endIndex);
-    });
-
-    watch(totalItems, () => {
-      calculateItemsPerPage();
-    });
-
-    const filteredPages = computed(() => {
-      return totalPages.value > 1
-        ? Array.from({ length: totalPages.value }, (_, index) => index + 1)
-        : [1];
+      return apiData.value.slice(startIndex, endIndex); // 從 apiData 中取得分頁資料
     });
 
     return {
@@ -228,11 +222,11 @@ export default {
       totalItems,
       totalPages,
       resultTitle,
-      handlePageChange,
-      goToPage,
       paginatedData,
-      filteredPages,
       printSelection,
+      searchBox,
+      filteredPages,
+      isInputFocused,
     };
   },
 };
@@ -398,6 +392,10 @@ html[屬性樣式] {
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.5rem;
   margin-top: -3%;
+}
+.form-label.active {
+  display: none;
+  color: blue;
 }
 
 @media (min-width: 768px) {
