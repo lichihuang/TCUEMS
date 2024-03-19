@@ -20,26 +20,12 @@
           <div class="card">
             <div class="card-header">
               <!----><!----><!----><!----><!----><!----><!----><!---->
-              <div class="form-outline">
-                <input
-                  class="form-control"
-                  id="searchInput"
-                  v-model="searchBox"
-                  @focus="isInputFocused = true"
-                  @blur="hideSearchLabel"
-                  @keydown.enter="hideSearchLabel"
-                />
-                <label
+              <div class="form-outline" style="">
+                <input class="form-control" id="MDBInput-276894" /><label
                   class="form-label"
-                  for="searchInput"
-                  :class="{ active: searchBox || isInputFocused }"
-                  :style="{
-                    top: isInputFocused ? '0' : '',
-                    fontSize: isInputFocused ? '12px' : '16px',
-                  }"
-                >
-                  Search
-                </label>
+                  for="MDBInput-276894"
+                  >Search</label
+                ><!----><!----><!----><!---->
                 <div class="form-notch">
                   <div class="form-notch-leading" style="width: 9px"></div>
                   <div class="form-notch-middle" style="width: 47.2px"></div>
