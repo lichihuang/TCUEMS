@@ -1,169 +1,150 @@
 <template>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="" />
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors" />
-    <meta name="generator" content="Hugo 0.79.0" />
-
-    <meta name="theme-color" content="#7952b3" />
-    <link href="form-validation.css" rel="stylesheet" />
-  </head>
-  <body class="bg-light">
-    <div class="container col-md-12 col-lg-12">
-      <main>
-        <div class="py-5 text-center">
-          <h3>期中預警通知列印</h3>
-          <hr />
-        </div>
-        <section>
-          <div class="card">
-            <div class="card-header">
-              <!----><!----><!----><!----><!----><!----><!----><!---->
-              <div class="form-outline" style="">
-                <input class="form-control" id="MDBInput-276894" /><label
-                  class="form-label"
-                  for="MDBInput-276894"
-                  >Search</label
-                ><!----><!----><!----><!---->
-                <div class="form-notch">
-                  <div class="form-notch-leading" style="width: 9px"></div>
-                  <div class="form-notch-middle" style="width: 47.2px"></div>
-                  <div class="form-notch-trailing"></div>
-                </div>
+  <div class="container col-md-12 col-lg-12">
+    <main>
+      <div class="py-5 text-center">
+        <h3>期中預警通知列印</h3>
+        <hr />
+      </div>
+      <section>
+        <div class="card">
+          <div class="card-header">
+            <div class="form-outline" style="">
+              <input class="form-control" v-model="searchBox" />
+              <label class="form-label">Search</label>
+              <div class="form-notch">
+                <div class="form-notch-leading" style="width: 9px"></div>
+                <div class="form-notch-middle" style="width: 47.2px"></div>
+                <div class="form-notch-trailing"></div>
               </div>
             </div>
-            <div class="card-body">
+          </div>
+          <div class="card-body">
+            <div
+              class="datatable datatable-bordered datatable-striped"
+              style="max-width: 100%"
+            >
               <div
-                class="datatable datatable-bordered datatable-striped"
-                style="max-width: 100%"
+                class="datatable-inner table-responsive"
+                style="overflow: auto; position: relative"
               >
                 <div
-                  class="datatable-inner table-responsive"
-                  style="overflow: auto; position: relative"
+                  class="ps ps--active-x"
+                  style="width: 100%; height: 100%; background-color: inherit"
                 >
-                  <div
-                    class="ps ps--active-x"
-                    style="width: 100%; height: 100%; background-color: inherit"
-                  >
-                    <div class="table-responsive">
-                      <table class="table table-striped table-sm7 mx-auto">
-                        <thead>
-                          <tr>
-                            <th class="text-center">編號</th>
-                            <th class="text-center">選擇列印</th>
-                            <th>學生</th>
-                            <th>期中預警紀錄</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(item, index) in paginatedData" :key="index">
-                            <td class="text-center">{{ getSerialNumber(index) }}</td>
-                            <td class="text-center">
-                              <input type="checkbox" v-model="printSelection[index]" />
-                            </td>
-                            <td>
-                              {{ item.dept_name_s }}{{ item.degree }}{{ item.sw_class
-                              }}<br />{{ item.w_std_no }}<br />{{ item.chi_name
-                              }}<br />狀態：{{ item.st_state
-                              }}<br />Date：<br />IP：<br />User：
-                            </td>
-                            <td>{{ item.w_smtr }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="ps__rail-x" style="left: 0px; bottom: 0px; width: 792px">
-                      <div
-                        class="ps__thumb-x"
-                        tabindex="0"
-                        style="left: 0px; width: 701px"
-                      ></div>
-                    </div>
-                    <div class="ps__rail-y" style="top: 0px; right: 0px">
-                      <div
-                        class="ps__thumb-y"
-                        tabindex="0"
-                        style="top: 0px; height: 0px"
-                      ></div>
-                    </div>
+                  <div class="table-responsive">
+                    <table class="table table-striped table-sm7 mx-auto">
+                      <thead>
+                        <tr>
+                          <th class="text-center">編號</th>
+                          <th class="text-center">選擇列印</th>
+                          <th>學生</th>
+                          <th>期中預警紀錄</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in paginatedData" :key="index">
+                          <td class="text-center">{{ getSerialNumber(index) }}</td>
+                          <td class="text-center">
+                            <input type="checkbox" v-model="printSelection[index]" />
+                          </td>
+                          <td>
+                            {{ item.dept_name_s }}{{ item.degree }}{{ item.sw_class
+                            }}<br />
+                            {{ item.w_std_no }}<br />{{ item.chi_name }}<br />狀態：{{
+                              item.st_state
+                            }}<br />Date：<br />IP：<br />User：
+                          </td>
+                          <td>{{ item.w_smtr }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="ps__rail-x" style="left: 0px; bottom: 0px; width: 792px">
+                    <div
+                      class="ps__thumb-x"
+                      tabindex="0"
+                      style="left: 0px; width: 701px"
+                    ></div>
+                  </div>
+                  <div class="ps__rail-y" style="top: 0px; right: 0px">
+                    <div
+                      class="ps__thumb-y"
+                      tabindex="0"
+                      style="top: 0px; height: 0px"
+                    ></div>
                   </div>
                 </div>
-                <!----><!---->
-                <div>
-                  <nav aria-label="Page navigation example" class="pagination-container">
-                    <ul class="pagination">
-                      <li class="page-item">
-                        <a
-                          class="page-link"
-                          href="#"
-                          aria-label="Previous"
-                          @click="goToPage(currentPage - 1)"
-                          :disabled="currentPage === 1"
-                        >
-                          <span aria-hidden="true">&laquo;</span>
-                        </a>
-                      </li>
-
-                      <li class="page-item" v-for="page in filteredPages" :key="page">
-                        <a
-                          class="page-link"
-                          href="#"
-                          @click="goToPage(page)"
-                          :style="{
-                            color: currentPage === page ? '#4682b4' : 'black',
-                            textDecoration: currentPage === page ? 'underline' : 'none',
-                          }"
-                          :class="{ active: currentPage === page }"
-                          >{{ page }}</a
-                        >
-                      </li>
-
-                      <li class="page-item">
-                        <a
-                          class="page-link"
-                          href="#"
-                          aria-label="Next"
-                          @click="goToPage(currentPage + 1)"
-                          :disabled="currentPage === totalPages"
-                        >
-                          <span aria-hidden="true">&raquo;</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </nav>
+              </div>
+              <div>
+                <div class="pagination">
+                  <span class="rows-per-page">頁面筆數：</span>
+                  <select v-model="itemsPerPage">
+                    <option v-for="option in pageOptions" :key="option">
+                      {{ option }}
+                    </option>
+                  </select>
+                  <span
+                    >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ startIndex }}&nbsp;-&nbsp;{{
+                      endIndex
+                    }}&nbsp;of&nbsp;&nbsp;{{ totalItems }}&nbsp;&nbsp;</span
+                  >
+                  <button
+                    class="pagination-button"
+                    @click="prevPage"
+                    :disabled="currentPage === 1"
+                  >
+                    &lt;
+                  </button>
+                  <button
+                    class="pagination-button"
+                    @click="nextPage"
+                    :disabled="currentPage === totalPages"
+                  >
+                    &gt;
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-      </main>
-    </div>
-    <CopyrightNotice />
-    <a href="https://lordicon.com/" class="icon-address">Icons by Lordicon.com</a>
-  </body>
+        </div>
+      </section>
+    </main>
+  </div>
+  <CopyrightNotice />
+  <a href="https://lordicon.com/" class="icon-address">Icons by Lordicon.com</a>
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useApiDataStore } from "../store/apiDataStore";
+import CopyrightNotice from "../components/CopyrightNotice.vue";
 
 export default {
-  name: "ResultTemp",
+  name: "Result",
+  components: {
+    CopyrightNotice,
+  },
   props: ["searchData"],
   setup(props) {
+    const pageOptions = [10, 20, 30, 40, 50];
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
-    const totalItems = ref(0);
-    const totalPages = ref(1);
+    const totalItems = ref(100);
+    const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
     const resultTitle = ref("");
     const printSelection = ref([]);
     const searchBox = ref("");
     const filteredPages = ref([]);
     const isInputFocused = ref(false);
+    const startIndex = ref(1);
+    const endIndex = ref(0);
 
-    const apiDataStore = useApiDataStore(); // 使用 apiDataStore
+    const apiDataStore = useApiDataStore();
+
+    const changePageSize = (value) => {
+      itemsPerPage.value = parseInt(value);
+    };
 
     onMounted(async () => {
       const route = useRoute();
@@ -175,41 +156,88 @@ export default {
       }
     });
 
-    const apiData = computed(() => apiDataStore.getApiData); // 從 apiDataStore 中取得資料
+    const apiData = computed(() => apiDataStore.getApiData);
 
     const goToPage = (page) => {
-      if (page < 1 || page > totalPages.value) return; // 防止超出範圍
+      if (page < 1 || page > totalPages.value) return;
 
       currentPage.value = page;
     };
 
     const paginatedData = computed(() => {
-      if (!apiData.value) return []; // 空值檢查
+      if (!apiData.value) return [];
 
       const startIndex = (currentPage.value - 1) * itemsPerPage.value;
       const endIndex = startIndex + itemsPerPage.value;
-      return apiData.value.slice(startIndex, endIndex); // 從 apiData 中取得分頁資料
-    });
-
-    // 計算 total pages
-    computed(() => {
-      if (apiData.value) {
-        totalPages.value = Math.ceil(apiData.value.length / itemsPerPage.value);
-      } else {
-        totalPages.value = 1;
-      }
-    });
-
-    // 更新 filteredPages
-    computed(() => {
-      filteredPages.value = Array.from({ length: totalPages.value }, (_, i) => i + 1);
+      return apiData.value.slice(startIndex, endIndex);
     });
 
     const getSerialNumber = (index) => {
       return (currentPage.value - 1) * itemsPerPage.value + index + 1;
     };
 
+    watch(currentPage, () => {
+      // Fetch data based on the current page
+      // Assuming you have a method fetchDataForPage
+      // fetchDataForPage(currentPage.value);
+    });
+
+    watch(apiData, () => {
+      // Update total items count when data changes
+      totalItems.value = apiData.value.length;
+    });
+
+    watch(totalItems, () => {
+      // Recalculate total pages when total items change
+      totalPages.value = Math.ceil(totalItems.value / itemsPerPage.value);
+    });
+
+    watch(totalPages, () => {
+      // Update filtered pages array when total pages change
+      filteredPages.value = Array.from({ length: totalPages.value }, (_, i) => i + 1);
+    });
+
+    watch([currentPage, itemsPerPage, totalItems], () => {
+      calculateStartAndEndIndex();
+    });
+
+    function calculateStartAndEndIndex() {
+      startIndex.value = (currentPage.value - 1) * itemsPerPage.value + 1;
+      endIndex.value = Math.min(
+        startIndex.value + itemsPerPage.value - 1,
+        totalItems.value
+      );
+    }
+
+    function handleSearch() {
+      // 在這裡更新相符的資料筆數 totalItems 的值
+
+      if (totalItems.value < itemsPerPage.value) {
+        startIndex.value = 1;
+        endIndex.value = totalItems.value;
+      } else {
+        startIndex.value = (currentPage.value - 1) * itemsPerPage.value + 1;
+        endIndex.value = Math.min(
+          currentPage.value * itemsPerPage.value,
+          totalItems.value
+        );
+      }
+    }
+
+    const prevPage = () => {
+      if (currentPage.value > 1) {
+        currentPage.value--;
+      }
+    };
+
+    const nextPage = () => {
+      if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+      }
+    };
+
     return {
+      pageOptions,
       currentPage,
       itemsPerPage,
       totalItems,
@@ -220,8 +248,13 @@ export default {
       searchBox,
       filteredPages,
       isInputFocused,
+      changePageSize,
       goToPage,
-      getSerialNumber, // 确保在返回的对象中公开 getSerialNumber 函数
+      getSerialNumber,
+      prevPage,
+      nextPage,
+      startIndex,
+      endIndex,
     };
   },
 };
@@ -395,6 +428,40 @@ td {
 .form-label.active {
   display: none;
   color: blue;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+}
+.pagination select {
+  margin: 0 5px;
+  width: 5.5%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 30px;
+}
+.pagination-button {
+  border: none;
+  background-color: transparent;
+  font-size: 1.4rem;
+}
+.rows-per-page {
+  font-size: 0.95rem;
+  color: #343a40;
+}
+select {
+  border: none;
+  border-radius: 5px; /* 調整為你需要的圓角大小 */
+  background-color: transparent; /* 可選，如果你想要去除背景色 */
+  /* 其他樣式 */
+  min-height: auto;
+  padding-top: 0.33em;
+  padding-bottom: 0.33em;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  border: 0;
+  transition: all 0.2s linear;
 }
 
 @media (min-width: 768px) {

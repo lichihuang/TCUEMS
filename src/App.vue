@@ -5,6 +5,7 @@ import Search from "./components/Search.vue";
 import Result from "./components/Result.vue";
 import SearchMain from "./views/SearchMain.vue";
 import ResultMain from "./views/ResultMain.vue";
+
 /* import "lord-icon-element/lord-icon.js"; */
 
 export default {
