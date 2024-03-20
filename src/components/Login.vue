@@ -1,6 +1,6 @@
 <template>
-  <div class="full-height">
-    <video id="yourVideoId" autoplay muted loop class="bg-video" style="margin-top: -3%">
+  <div class="full-height content">
+    <video id="yourVideoId" autoplay muted loop class="bg-video" style="margin-top: 0">
       <source :src="'./LoginVideo.mp4'" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
@@ -47,14 +47,15 @@ export default {
     const pageLogingClick = async () => {
       console.log("To PageSearch!");
       const bgVideo = document.getElementById("yourVideoId");
-      bgVideo.src = "";
+      // 啟用滾動條
+      await nextTick();
       enableBodyScroll(document.body);
-
-      //await nextTick();
 
       const resolvedRoute = router.resolve({ path: "/SearchMain" });
       console.log(resolvedRoute);
       window.location.href = resolvedRoute.href; // 使用 resolve 方法進行頁面導覽
+
+      bgVideo.src = "";
     };
 
     return { pageLogingClick };
@@ -75,13 +76,17 @@ body {
   overflow: hidden;
   background: url("./LoginVideo.mp4") center center / cover no-repeat fixed;
   z-index: -1;
-  margin-top: 0;
+  margin-top: 0%;
+}
+
+.content {
+  margin-top: 0%;
 }
 
 .full-height {
   height: 100vh;
   position: relative;
-  margin-top: 3%;
+  margin-top: 0%;
 }
 
 .bg-video {
@@ -125,28 +130,28 @@ body {
 
 @media screen and (max-width: 767px) {
   .full-height {
-    height: auto; /* 將高度設為自動，以便適應內容 */
+    height: auto;
     margin: 0;
     padding: 10px;
   }
 
   .logo {
-    width: 58%; /* 調整 logo 在小螢幕上的大小 */
-    margin-top: 5%; /* 調整 logo 在小螢幕上的 margin-top */
-    margin-left: -5%; /* 調整 logo 在小螢幕上的 margin-left */
+    width: 58%;
+    margin-top: 5%;
+    margin-left: -5%;
   }
 
   .btn-img {
-    width: 32%; /* 調整 btn-img 在小螢幕上的大小 */
-    margin-top: 15%; /* 調整 btn-img 在小螢幕上的 margin-top */
-    margin-left: 8.5%; /* 調整 btn-img 在小螢幕上的 margin-left */
+    width: 32%;
+    margin-top: 15%;
+    margin-left: 8.5%;
   }
 
   .stair-img {
-    width: 90%; /* 調整 stair-img 在小螢幕上的大小 */
-    height: 15%; /* 調整 stair-img 在小螢幕上的高度 */
-    margin-left: -35%; /* 調整 stair-img 在小螢幕上的 margin-left */
-    margin-top: 45%; /* 調整 stair-img 在小螢幕上的 margin-bottom */
+    width: 90%;
+    height: 15%;
+    margin-left: -35%;
+    margin-top: 45%;
   }
 }
 </style>

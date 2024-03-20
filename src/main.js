@@ -1,6 +1,5 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import './assets/global.css';
 import SearchMain from "./views/SearchMain.vue"
 import ResultMain from "./views/ResultMain.vue"
 import router from './router';
