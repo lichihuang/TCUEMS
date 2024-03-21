@@ -127,10 +127,17 @@ export default {
   },
   props: ["searchData"],
   setup(props) {
-    const pageOptions = [10, 20, 30, 40, 50];
+    const pageOptions = [10, 25, 50, 75, 100];
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
-    const totalItems = ref(100);
+    const totalItems = computed(() => {
+      const startIdx = (currentPage.value - 1) * itemsPerPage.value + 1;
+      const endIdx = Math.min(
+        startIdx + itemsPerPage.value - 1,
+        paginatedData.value.length
+      );
+      return apiData.value.length /* endIdx - startIdx + 1 */;
+    });
     const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
     const resultTitle = ref("");
     const printSelection = ref([]);
@@ -138,7 +145,11 @@ export default {
     const filteredPages = ref([]);
     const isInputFocused = ref(false);
     const startIndex = ref(1);
-    const endIndex = ref(0);
+    const endIndex = computed(() => {
+      const startIdx = (currentPage.value - 1) * itemsPerPage.value + 1;
+      const endIdx = Math.min(startIdx + itemsPerPage.value - 1, totalItems.value);
+      return endIdx;
+    });
 
     const apiDataStore = useApiDataStore();
 
@@ -176,29 +187,32 @@ export default {
       return (currentPage.value - 1) * itemsPerPage.value + index + 1;
     };
 
-    watch(currentPage, () => {
-      // Fetch data based on the current page
-      // Assuming you have a method fetchDataForPage
-      // fetchDataForPage(currentPage.value);
-    });
-
-    watch(apiData, () => {
-      // Update total items count when data changes
-      totalItems.value = apiData.value.length;
-    });
+    watch(
+      () => apiDataStore.getApiData,
+      (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+          totalItems.value = newValue.length;
+          totalPages.value = Math.ceil(totalItems.value / itemsPerPage.value);
+        }
+      },
+      { deep: true }
+    );
 
     watch(totalItems, () => {
-      // Recalculate total pages when total items change
       totalPages.value = Math.ceil(totalItems.value / itemsPerPage.value);
     });
 
     watch(totalPages, () => {
-      // Update filtered pages array when total pages change
       filteredPages.value = Array.from({ length: totalPages.value }, (_, i) => i + 1);
     });
 
     watch([currentPage, itemsPerPage, totalItems], () => {
       calculateStartAndEndIndex();
+    });
+
+    watch(itemsPerPage, (newVal) => {
+      currentPage.value = 1; // 重置为第一页
+      calculateStartAndEndIndex(); // 更新startIndex和endIndex
     });
 
     function calculateStartAndEndIndex() {
@@ -209,30 +223,41 @@ export default {
       );
     }
 
-    function handleSearch() {
-      // 在這裡更新相符的資料筆數 totalItems 的值
+    async function handleSearch() {
+      try {
+        const searchData = await fetchSearchData();
+        totalItems.value = searchData.length;
+        calculateStartAndEndIndex();
+      } catch (error) {
+        console.error("搜索数据时发生错误：", error);
+      }
+    }
 
-      if (totalItems.value < itemsPerPage.value) {
-        startIndex.value = 1;
-        endIndex.value = totalItems.value;
-      } else {
-        startIndex.value = (currentPage.value - 1) * itemsPerPage.value + 1;
-        endIndex.value = Math.min(
-          currentPage.value * itemsPerPage.value,
-          totalItems.value
-        );
+    async function fetchSearchData() {
+      try {
+        const response = await fetch("/api/search");
+        if (!response.ok) {
+          throw new Error("無法獲取相符的資料");
+        }
+        const searchData = await response.json();
+        return searchData;
+      } catch (error) {
+        console.error("發生錯誤：", error);
+        return [];
       }
     }
 
     const prevPage = () => {
       if (currentPage.value > 1) {
         currentPage.value--;
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     };
 
     const nextPage = () => {
       if (currentPage.value < totalPages.value) {
         currentPage.value++;
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     };
 
@@ -255,6 +280,7 @@ export default {
       nextPage,
       startIndex,
       endIndex,
+      handleSearch,
     };
   },
 };
