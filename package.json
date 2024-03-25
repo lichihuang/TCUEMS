@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@lordicon/element": "^1.4.2",
+    "@lordicon/element": "^1.6.0",
     "@tomiaa/vue3-components": "^0.2.40",
     "axios": "^1.6.7",
     "body-scroll-lock": "^4.0.0-beta.0",

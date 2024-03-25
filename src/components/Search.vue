@@ -667,7 +667,7 @@ html[屬性樣式] {
   font-size: 7px;
   position: fixed;
   top: 905px;
-  left: 1838px;
+  left: 1820px;
 }
 .bd-callout-warning {
   --bd-callout-color: var(--bs-warning-text-emphasis);

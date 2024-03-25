@@ -35,10 +35,10 @@
                     <table class="table table-striped table-sm7 mx-auto">
                       <thead>
                         <tr>
-                          <th class="text-center">編號</th>
-                          <th class="text-center">選擇列印</th>
-                          <th>學生</th>
-                          <th>期中預警紀錄</th>
+                          <th class="text-center bold">編號</th>
+                          <th class="text-center bold">選擇列印</th>
+                          <th class="bold">學生</th>
+                          <th class="bold">期中預警紀錄</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -102,6 +102,29 @@
                   >
                     &gt;
                   </button>
+                  <div class="resultPage-btn">
+                    <button
+                      @click="buttonPrint"
+                      class="btn-style w-10 btn btn-primary btn-md"
+                      type="button"
+                    >
+                      列印
+                    </button>
+                    <button
+                      @click="buttonSelectAll"
+                      class="btn-style w-10 btn btn-primary btn-md"
+                      type="button"
+                    >
+                      全部選取
+                    </button>
+                    <button
+                      @click="buttonDeselect"
+                      class="btn-style w-10 btn btn-primary btn-md"
+                      type="reset"
+                    >
+                      取消選取
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -110,6 +133,7 @@
       </section>
     </main>
   </div>
+  <PageController />
   <CopyrightNotice />
   <a href="https://lordicon.com/" class="icon-address">Icons by Lordicon.com</a>
 </template>
@@ -119,25 +143,20 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useApiDataStore } from "../store/apiDataStore";
 import CopyrightNotice from "../components/CopyrightNotice.vue";
+import PageController from "../components/PageController.vue";
 
 export default {
   name: "Result",
   components: {
     CopyrightNotice,
+    PageController,
   },
   props: ["searchData"],
   setup(props) {
     const pageOptions = [10, 25, 50, 75, 100];
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
-    const totalItems = computed(() => {
-      const startIdx = (currentPage.value - 1) * itemsPerPage.value + 1;
-      const endIdx = Math.min(
-        startIdx + itemsPerPage.value - 1,
-        paginatedData.value.length
-      );
-      return apiData.value.length /* endIdx - startIdx + 1 */;
-    });
+    const totalItems = computed(() => (apiData.value ? apiData.value.length : 0));
     const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
     const resultTitle = ref("");
     const printSelection = ref([]);
@@ -146,16 +165,29 @@ export default {
     const isInputFocused = ref(false);
     const startIndex = ref(1);
     const endIndex = computed(() => {
-      const startIdx = (currentPage.value - 1) * itemsPerPage.value + 1;
-      const endIdx = Math.min(startIdx + itemsPerPage.value - 1, totalItems.value);
-      return endIdx;
+      if (currentPage.value === totalPages.value) {
+        console.log("currentPage.value === totalPages.value");
+        return totalItems.value;
+      } else {
+        const endIdx = startIndex.value + itemsPerPage.value - 1;
+        return Math.min(endIdx, totalItems.value);
+      }
     });
 
     const apiDataStore = useApiDataStore();
 
     const changePageSize = (value) => {
       itemsPerPage.value = parseInt(value);
+      resetVariables();
     };
+
+    const selectAll = ref(false);
+
+    function resetVariables() {
+      currentPage.value = 1;
+      startIndex.value = 1;
+      calculateEndIndex();
+    }
 
     onMounted(async () => {
       const route = useRoute();
@@ -177,12 +209,13 @@ export default {
 
     const paginatedData = computed(() => {
       if (!apiData.value) return [];
-
-      const startIndex = (currentPage.value - 1) * itemsPerPage.value;
-      const endIndex = startIndex + itemsPerPage.value;
-      return apiData.value.slice(startIndex, endIndex);
+      const startIdx = (currentPage.value - 1) * itemsPerPage.value;
+      const endIdx = Math.min(startIdx + itemsPerPage.value, totalItems.value);
+      const adjustedEndIdx = Math.min(startIdx + itemsPerPage.value, totalItems.value);
+      return apiData.value.slice(startIdx, adjustedEndIdx);
     });
 
+    // 編號
     const getSerialNumber = (index) => {
       return (currentPage.value - 1) * itemsPerPage.value + index + 1;
     };
@@ -199,7 +232,7 @@ export default {
     );
 
     watch(totalItems, () => {
-      totalPages.value = Math.ceil(totalItems.value / itemsPerPage.value);
+      filteredPages.value = Array.from({ length: totalPages.value }, (_, i) => i + 1);
     });
 
     watch(totalPages, () => {
@@ -210,26 +243,28 @@ export default {
       calculateStartAndEndIndex();
     });
 
-    watch(itemsPerPage, (newVal) => {
-      currentPage.value = 1; // 重置为第一页
-      calculateStartAndEndIndex(); // 更新startIndex和endIndex
+    watch(itemsPerPage, (/* newVal */) => {
+      currentPage.value = 1;
+      calculateStartAndEndIndex();
     });
 
     function calculateStartAndEndIndex() {
       startIndex.value = (currentPage.value - 1) * itemsPerPage.value + 1;
-      endIndex.value = Math.min(
-        startIndex.value + itemsPerPage.value - 1,
-        totalItems.value
-      );
+      calculateEndIndex();
+    }
+
+    function calculateEndIndex() {
+      const endIdx = startIndex.value + itemsPerPage.value - 1;
+      endIndex.value = Math.min(endIdx, totalItems.value);
     }
 
     async function handleSearch() {
       try {
         const searchData = await fetchSearchData();
         totalItems.value = searchData.length;
-        calculateStartAndEndIndex();
+        resetVariables(); // 重置變量
       } catch (error) {
-        console.error("搜索数据时发生错误：", error);
+        console.error("搜尋發生錯誤：", error);
       }
     }
 
@@ -261,6 +296,40 @@ export default {
       }
     };
 
+    // 將列印按鈕定義在 setup 函式外
+    const buttonPrint = ref(null);
+
+    // 點擊列印按鈕時觸發的函式
+    const handlePrint = () => {
+      // 在此處將已勾選的資料加入到列印的資料集合中
+      const selectedData = printSelection.value.filter((selected, index) => selected);
+      printData.value = selectedData.map(formatData); // 將每一筆資料填入指定的格式中
+      window.print(); // 列印出填入格式的資料
+    };
+
+    // 監聽列印按鈕的點擊事件
+    watch(buttonPrint, handlePrint);
+
+    // 將資料填入指定的格式中的函式
+    const formatData = (data) => {
+      // 在此處將資料轉換為您所需的格式
+      return `${data.name}: ${data.value}`;
+    };
+
+    const buttonSelectAll = () => {
+      console.log("SelectAll");
+      selectAll.value = true;
+      printSelection.value = Array(apiData.value.length).fill(true);
+      console.log(printSelection.value);
+    };
+
+    const buttonDeselect = () => {
+      console.log("Deselect");
+      selectAll.value = false;
+      printSelection.value = [];
+      console.log(printSelection.value);
+    };
+
     return {
       pageOptions,
       currentPage,
@@ -281,6 +350,9 @@ export default {
       startIndex,
       endIndex,
       handleSearch,
+      buttonPrint,
+      buttonSelectAll,
+      buttonDeselect,
     };
   },
 };
@@ -379,7 +451,12 @@ html[屬性樣式] {
   background-color: var(--bd-callout-bg, var(--bs-gray-100));
   border-left: 0.25rem solid var(--bd-callout-border, var(--bs-gray-300));
 }
+.bold {
+  font-size: 0.92rem;
+  font-weight: bold;
+}
 td {
+  font-size: 0.92rem;
   line-height: 1.3;
   vertical-align: middle;
 }
@@ -410,7 +487,7 @@ td {
   font-size: 7px;
   position: fixed;
   top: 905px;
-  left: 1838px;
+  left: 1820px;
 }
 .pagination-container {
   display: flex;
@@ -488,6 +565,22 @@ select {
   padding-right: 0.75em;
   border: 0;
   transition: all 0.2s linear;
+}
+.btn-style {
+  background-color: #4682b4;
+  border-color: #ced4da;
+  width: 150px;
+}
+.btn-style:hover {
+  background-color: #0f4f85;
+}
+.btn-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.resultPage-btn {
+  margin-left: auto;
 }
 
 @media (min-width: 768px) {
