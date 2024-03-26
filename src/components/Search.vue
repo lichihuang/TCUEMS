@@ -248,24 +248,21 @@ export default {
     const inputSemester = ref("");
     const inputStudentID = ref("");
 
-    const semesterWarnings = ref([]); // 存抓取到的Data
+    const semesterWarnings = ref([]); // 取到的Data
 
     const apiDataStore = useApiDataStore();
 
     const store = createStore({
-      // 定义 store 的状态、动作和 getter
       state: () => ({
-        apiData: [], // 存储 API 数据的状态
+        apiData: [], // 儲存API數據狀態
       }),
 
-      // 定义修改状态的动作
       actions: {
         setApiData(data) {
           this.apiData = data;
         },
       },
 
-      // 定义获取状态的 getter
       getters: {
         getApiData() {
           return this.apiData;
@@ -337,22 +334,6 @@ export default {
       () => collegeDepartments[selectedCollege.value] || []
     );
 
-    const showErrorAlert = (message) => {
-      alert(message);
-    };
-
-    const handleRequestError = (error) => {
-      if (error.response) {
-        console.error(
-          `Response status: ${error.response.status}, Response data: ${error.response.data}`
-        );
-      } else if (error.request) {
-        console.error("No response received from the server.");
-      } else {
-        console.error(`Error during request: ${error.message}`);
-      }
-    };
-
     watchEffect(() => {
       console.log(selectedDepartment.value);
     });
@@ -404,7 +385,6 @@ export default {
           if (response && response.status === 200) {
             if (response.data && response.data.length > 0) {
               console.log("相符資料：", response.data);
-              /* store.apiDataStore.setApiData(response.data); */
               apiDataStore.setApiData(response.data);
               await router.push({ name: "ResultMain" });
             } else {
@@ -417,7 +397,6 @@ export default {
           }
         } catch (error) {
           console.error("Error during API request:", error);
-          // 在這裡處理錯誤
           alert("搜尋失敗，請稍後再試。");
         }
       }

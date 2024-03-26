@@ -86,7 +86,9 @@
                   <span
                     >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ startIndex }}&nbsp;-&nbsp;{{
                       endIndex
-                    }}&nbsp;of&nbsp;&nbsp;{{ totalItems }}&nbsp;&nbsp;</span
+                    }}&nbsp;&nbsp;of&nbsp;&nbsp;{{
+                      totalItems
+                    }}&nbsp;&nbsp;&nbsp;&nbsp;</span
                   >
                   <button
                     class="pagination-button"
@@ -264,7 +266,7 @@ export default {
         totalItems.value = searchData.length;
         resetVariables(); // 重置變量
       } catch (error) {
-        console.error("搜尋發生錯誤：", error);
+        console.error("搜索数据时发生错误：", error);
       }
     }
 
@@ -296,23 +298,28 @@ export default {
       }
     };
 
-    // 將列印按鈕定義在 setup 函式外
     const buttonPrint = ref(null);
 
     // 點擊列印按鈕時觸發的函式
     const handlePrint = () => {
-      // 在此處將已勾選的資料加入到列印的資料集合中
-      const selectedData = printSelection.value.filter((selected, index) => selected);
-      printData.value = selectedData.map(formatData); // 將每一筆資料填入指定的格式中
-      window.print(); // 列印出填入格式的資料
+      const selectedDataIndices = printSelection.value.reduce((acc, selected, index) => {
+        if (selected) {
+          acc.push(index); // 記錄被選取之資料Index
+        }
+        return acc;
+      }, []);
+
+      const selectedData = selectedDataIndices.map((index) => apiData.value[index]); // 取得被選取的資料
+
+      // 列印被選取資料
+      selectedData.forEach((data) => {
+        console.log(formatData(data));
+      });
     };
 
-    // 監聽列印按鈕的點擊事件
-    watch(buttonPrint, handlePrint);
-
-    // 將資料填入指定的格式中的函式
+    // 将資料填入指定的格式中的函式
     const formatData = (data) => {
-      // 在此處將資料轉換為您所需的格式
+      // 將資料轉換為所需格式
       return `${data.name}: ${data.value}`;
     };
 
@@ -502,14 +509,12 @@ td {
   border-color: #ced4da;
 }
 
-/* Change color and background of page numbers */
 .pagination-container .page-item .page-link {
   color: #4682b4;
   background-color: white;
   border-color: #ced4da;
 }
 
-/* Change background color of the active page */
 .pagination-container .page-item.active .page-link {
   background-color: #4682b4;
   color: white;
@@ -555,9 +560,8 @@ td {
 }
 select {
   border: none;
-  border-radius: 5px; /* 調整為你需要的圓角大小 */
-  background-color: transparent; /* 可選，如果你想要去除背景色 */
-  /* 其他樣式 */
+  border-radius: 5px;
+  background-color: transparent;
   min-height: auto;
   padding-top: 0.33em;
   padding-bottom: 0.33em;
