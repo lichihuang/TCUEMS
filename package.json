@@ -1,22 +1,22 @@
 {
   "name": "tcuems1-6",
-  "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "private": true,
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
+    "dev": "vite",
     "preview": "vite preview"
   },
   "dependencies": {
     "@lordicon/element": "^1.6.0",
-    "@tomiaa/vue3-components": "^0.2.40",
+    "@tomiaa/vue3-components": "^0.2.13",
     "axios": "^1.6.7",
     "body-scroll-lock": "^4.0.0-beta.0",
     "bootstrap": "^5.3.3",
     "exceljs": "^4.4.0",
     "http-status": "^1.7.4",
     "lottie-web": "^5.12.2",
+    "mdb-ui-kit": "^7.2.0",
     "mdb-vue-ui-kit": "^4.1.1",
     "pinia": "^2.1.7",
     "sweetalert2": "^11.6.13",
@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",
-    "vite": "^5.1.0"
-  }
+    "vite": "^5.1.0",
+    "vue-cli-plugin-mdb5": "~2.1.0"
+  },
+  "type": "module"
 }

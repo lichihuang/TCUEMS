@@ -392,7 +392,7 @@ export default {
               alert("無相符資料");
             }
           } else {
-            console.error("API 请求失败:", response.statusText);
+            console.error("API 請求失敗:", response.statusText);
             alert("搜尋失敗，請稍後再試。");
           }
         } catch (error) {

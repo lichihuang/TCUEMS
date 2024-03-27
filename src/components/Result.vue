@@ -8,9 +8,14 @@
       <section>
         <div class="card">
           <div class="card-header">
-            <div class="form-outline" style="">
-              <input class="form-control" v-model="searchBox" />
-              <label class="form-label">Search</label>
+            <div class="form-outline" data-mdb-input-init>
+              <input type="text" class="form-control" id="datatable-search-input" />
+              <label
+                class="form-label"
+                for="datatable-search-input"
+                style="margin-left: 0px"
+                >Search</label
+              >
               <div class="form-notch">
                 <div class="form-notch-leading" style="width: 9px"></div>
                 <div class="form-notch-middle" style="width: 47.2px"></div>
@@ -147,6 +152,9 @@ import { useApiDataStore } from "../store/apiDataStore";
 import CopyrightNotice from "../components/CopyrightNotice.vue";
 import PageController from "../components/PageController.vue";
 
+import { Input, initMDB } from "mdb-ui-kit";
+initMDB({ Input });
+
 export default {
   name: "Result",
   components: {
@@ -167,20 +175,14 @@ export default {
     const isInputFocused = ref(false);
     const startIndex = ref(1);
     const endIndex = computed(() => {
-      if (currentPage.value === totalPages.value) {
-        console.log("currentPage.value === totalPages.value");
-        return totalItems.value;
-      } else {
-        const endIdx = startIndex.value + itemsPerPage.value - 1;
-        return Math.min(endIdx, totalItems.value);
-      }
+      return calculateEndIndex();
     });
 
     const apiDataStore = useApiDataStore();
 
     const changePageSize = (value) => {
       itemsPerPage.value = parseInt(value);
-      resetVariables();
+      calculateEndIndex();
     };
 
     const selectAll = ref(false);
@@ -250,14 +252,41 @@ export default {
       calculateStartAndEndIndex();
     });
 
+    const filteredData = computed(() => {
+      if (!searchBox.value.trim()) {
+        return apiData.value;
+      } else {
+        const searchRegex = new RegExp(searchBox.value.trim(), "i");
+        return apiData.value.filter((item) => {
+          return (
+            searchRegex.test(item.dept_name_s) ||
+            searchRegex.test(item.degree) ||
+            searchRegex.test(item.sw_class) ||
+            searchRegex.test(item.w_std_no) ||
+            searchRegex.test(item.chi_name) ||
+            searchRegex.test(item.st_state) ||
+            searchRegex.test(item.w_smtr)
+          );
+        });
+      }
+    });
+
     function calculateStartAndEndIndex() {
       startIndex.value = (currentPage.value - 1) * itemsPerPage.value + 1;
       calculateEndIndex();
     }
 
     function calculateEndIndex() {
-      const endIdx = startIndex.value + itemsPerPage.value - 1;
-      endIndex.value = Math.min(endIdx, totalItems.value);
+      console.log("totalItems:", totalItems.value);
+      console.log("currentPage:", currentPage.value);
+      console.log("itemsPerPage:", itemsPerPage.value);
+
+      const startIdx = (currentPage.value - 1) * itemsPerPage.value + 1;
+      const endIdx = currentPage.value * itemsPerPage.value;
+      const endIndex = Math.min(endIdx, totalItems.value);
+
+      console.log("endIndex:", endIndex);
+      return endIndex;
     }
 
     async function handleSearch() {
@@ -266,7 +295,7 @@ export default {
         totalItems.value = searchData.length;
         resetVariables(); // 重置變量
       } catch (error) {
-        console.error("搜索数据时发生错误：", error);
+        console.error("搜尋發生錯誤：", error);
       }
     }
 
@@ -360,6 +389,7 @@ export default {
       buttonPrint,
       buttonSelectAll,
       buttonDeselect,
+      filteredData,
     };
   },
 };
