@@ -213,12 +213,16 @@ export default {
 
     const paginatedData = computed(() => {
       if (!apiData.value) return [];
-      const startIdx = (currentPage.value - 1) * itemsPerPage.value;
-      const endIdx = Math.min(startIdx + itemsPerPage.value, totalItems.value);
-      const adjustedEndIdx = Math.min(startIdx + itemsPerPage.value, totalItems.value);
-      return apiData.value.slice(startIdx, adjustedEndIdx);
-    });
 
+      const startIdx = (currentPage.value - 1) * itemsPerPage.value;
+      let endIdx = currentPage.value * itemsPerPage.value;
+
+      if (endIdx > totalItems.value) {
+        endIdx = totalItems.value;
+      }
+
+      return apiData.value.slice(startIdx, endIdx);
+    });
     // 編號
     const getSerialNumber = (index) => {
       return (currentPage.value - 1) * itemsPerPage.value + index + 1;
