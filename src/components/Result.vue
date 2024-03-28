@@ -9,7 +9,12 @@
         <div class="card">
           <div class="card-header">
             <div class="form-outline" data-mdb-input-init>
-              <input type="text" class="form-control" id="datatable-search-input" />
+              <input
+                type="text"
+                class="form-control"
+                v-model="searchInput"
+                @input="handleSearch"
+              />
               <label
                 class="form-label"
                 for="datatable-search-input"
@@ -171,6 +176,7 @@ export default {
     const resultTitle = ref("");
     const printSelection = ref([]);
     const searchBox = ref("");
+    const searchTerm = ref("");
     const filteredPages = ref([]);
     const isInputFocused = ref(false);
     const startIndex = ref(1);
@@ -256,7 +262,7 @@ export default {
       calculateStartAndEndIndex();
     });
 
-    const filteredData = computed(() => {
+    /* const filteredData = computed(() => {
       if (!searchBox.value.trim()) {
         return apiData.value;
       } else {
@@ -273,6 +279,11 @@ export default {
           );
         });
       }
+    }); */
+
+    const filteredData = computed(() => {
+      const regex = new RegExp(searchTerm.value.trim(), "i");
+      return apiDataStore.getApiData.filter((item) => regex.test(item.name));
     });
 
     function calculateStartAndEndIndex() {
@@ -394,6 +405,7 @@ export default {
       buttonSelectAll,
       buttonDeselect,
       filteredData,
+      searchTerm,
     };
   },
 };
