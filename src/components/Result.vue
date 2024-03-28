@@ -52,7 +52,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="(item, index) in filteredData" :key="index">
+                        <tr v-for="(item, index) in paginatedData" :key="index">
                           <td class="text-center">{{ getSerialNumber(index) }}</td>
                           <td class="text-center">
                             <input type="checkbox" v-model="printSelection[index]" />
@@ -216,7 +216,7 @@ export default {
       currentPage.value = page;
     };
 
-    const paginatedData = computed(() => {
+    /*const paginatedData = computed(() => {
       if (!apiData.value) return [];
 
       const startIdx = (currentPage.value - 1) * itemsPerPage.value;
@@ -227,7 +227,24 @@ export default {
       }
 
       return apiData.value.slice(startIdx, endIdx);
+    }); */
+
+    const paginatedData = computed(() => {
+      const dataToPaginate = searchTerm.value
+        ? filteredData.value
+        : apiDataStore.getApiData;
+      if (!dataToPaginate) return [];
+
+      const startIdx = (currentPage.value - 1) * itemsPerPage.value;
+      let endIdx = currentPage.value * itemsPerPage.value;
+
+      if (endIdx > dataToPaginate.length) {
+        endIdx = dataToPaginate.length;
+      }
+
+      return dataToPaginate.slice(startIdx, endIdx);
     });
+
     // 編號
     const getSerialNumber = (index) => {
       return (currentPage.value - 1) * itemsPerPage.value + index + 1;
