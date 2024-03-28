@@ -171,8 +171,15 @@ export default {
     const pageOptions = [10, 25, 50, 75, 100];
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
-    const totalItems = computed(() => (apiData.value ? apiData.value.length : 0));
+    /* const totalItems = computed(() => (apiData.value ? apiData.value.length : 0));
+    const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value)); */
+    const totalItems = computed(() => {
+      const dataToCount = searchTerm.value ? filteredData.value : apiDataStore.getApiData;
+      return dataToCount ? dataToCount.length : 0;
+    });
+
     const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
+
     const resultTitle = ref("");
     const printSelection = ref([]);
     const searchTerm = ref("");
@@ -304,13 +311,24 @@ export default {
       return endIndex;
     }
 
-    async function handleSearch() {
+    /* async function handleSearch() {
       try {
         const searchData = await fetchSearchData();
         totalItems.value = searchData.length;
         resetVariables(); // 重置變量
       } catch (error) {
         console.error("搜尋發生錯誤：", error);
+      }
+    } */
+
+    async function handleSearch() {
+      try {
+        const searchData = await fetchSearchData();
+        console.log("搜索结果长度：", searchData.length);
+        totalItems.value = searchData.length;
+        resetVariables(); // 重置变量
+      } catch (error) {
+        console.error("搜索发生错误：", error);
       }
     }
 
