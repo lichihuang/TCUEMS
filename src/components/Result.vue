@@ -171,8 +171,6 @@ export default {
     const pageOptions = [10, 25, 50, 75, 100];
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
-    /* const totalItems = computed(() => (apiData.value ? apiData.value.length : 0));
-    const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value)); */
     const totalItems = computed(() => {
       const dataToCount = searchTerm.value ? filteredData.value : apiDataStore.getApiData;
       return dataToCount ? dataToCount.length : 0;
@@ -222,19 +220,6 @@ export default {
 
       currentPage.value = page;
     };
-
-    /*const paginatedData = computed(() => {
-      if (!apiData.value) return [];
-
-      const startIdx = (currentPage.value - 1) * itemsPerPage.value;
-      let endIdx = currentPage.value * itemsPerPage.value;
-
-      if (endIdx > totalItems.value) {
-        endIdx = totalItems.value;
-      }
-
-      return apiData.value.slice(startIdx, endIdx);
-    }); */
 
     const paginatedData = computed(() => {
       const dataToPaginate = searchTerm.value
@@ -310,16 +295,6 @@ export default {
       console.log("endIndex:", endIndex);
       return endIndex;
     }
-
-    /* async function handleSearch() {
-      try {
-        const searchData = await fetchSearchData();
-        totalItems.value = searchData.length;
-        resetVariables(); // 重置變量
-      } catch (error) {
-        console.error("搜尋發生錯誤：", error);
-      }
-    } */
 
     async function handleSearch() {
       try {
