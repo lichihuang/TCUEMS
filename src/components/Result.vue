@@ -262,25 +262,6 @@ export default {
       calculateStartAndEndIndex();
     });
 
-    /* const filteredData = computed(() => {
-      if (!searchBox.value.trim()) {
-        return apiData.value;
-      } else {
-        const searchRegex = new RegExp(searchBox.value.trim(), "i");
-        return apiData.value.filter((item) => {
-          return (
-            searchRegex.test(item.dept_name_s) ||
-            searchRegex.test(item.degree) ||
-            searchRegex.test(item.sw_class) ||
-            searchRegex.test(item.w_std_no) ||
-            searchRegex.test(item.chi_name) ||
-            searchRegex.test(item.st_state) ||
-            searchRegex.test(item.w_smtr)
-          );
-        });
-      }
-    }); */
-
     const filteredData = computed(() => {
       const regex = new RegExp(searchTerm.value.trim(), "i");
       return apiDataStore.getApiData.filter((item) => regex.test(item.name));
