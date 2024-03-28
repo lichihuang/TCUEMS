@@ -12,7 +12,7 @@
               <input
                 type="text"
                 class="form-control"
-                v-model="searchInput"
+                v-model="searchTerm"
                 @input="handleSearch"
               />
               <label
@@ -52,7 +52,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="(item, index) in paginatedData" :key="index">
+                        <tr v-for="(item, index) in filteredData" :key="index">
                           <td class="text-center">{{ getSerialNumber(index) }}</td>
                           <td class="text-center">
                             <input type="checkbox" v-model="printSelection[index]" />
@@ -175,7 +175,6 @@ export default {
     const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
     const resultTitle = ref("");
     const printSelection = ref([]);
-    const searchBox = ref("");
     const searchTerm = ref("");
     const filteredPages = ref([]);
     const isInputFocused = ref(false);
@@ -264,7 +263,10 @@ export default {
 
     const filteredData = computed(() => {
       const regex = new RegExp(searchTerm.value.trim(), "i");
-      return apiDataStore.getApiData.filter((item) => regex.test(item.name));
+      return apiDataStore.getApiData.filter((item) => {
+        // 检查每个字段是否包含搜索词
+        return Object.values(item).some((value) => regex.test(value));
+      });
     });
 
     function calculateStartAndEndIndex() {
@@ -371,7 +373,6 @@ export default {
       resultTitle,
       paginatedData,
       printSelection,
-      searchBox,
       filteredPages,
       isInputFocused,
       changePageSize,
